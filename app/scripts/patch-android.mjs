@@ -49,4 +49,14 @@ writeFileSync(
 `,
 );
 console.log('✓ ikonka powiadomień ic_stat_nawyk');
+
+// 4) więcej pamięci dla Gradle + Kotlin bez osobnego demona (demon wysypywał się na Windows)
+const propsPath = join(android, 'gradle.properties');
+let props = readFileSync(propsPath, 'utf8');
+props = props.replace(/org\.gradle\.jvmargs=.*/, 'org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8');
+if (!props.includes('kotlin.compiler.execution.strategy')) {
+  props += '\nkotlin.compiler.execution.strategy=in-process\nkotlin.daemon.jvmargs=-Xmx2048m\n';
+}
+writeFileSync(propsPath, props);
+console.log('✓ gradle.properties (pamięć, Kotlin in-process)');
 console.log('Gotowe.');
