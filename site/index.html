@@ -3,111 +3,264 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Nawykomator – aplikacja do nawyków, pętli i przypomnień</title>
-    <meta name="description" content="Nawykomator: zapętlaj nagrania z YouTube, SoundCloud i telefonu, układaj z nich codzienne zadania, zbieraj punkty i nie zapominaj dzięki przypomnieniom." />
-    <meta name="theme-color" content="#2f6b4f" />
+    <title>Nawykomator – nawyki, nagrania w pętli i przypomnienia na Androida</title>
+    <meta name="description" content="Nawykomator: układaj codzienne zadania z nagrań, filmów i notatek. Przypomnienia o stałej porze, prowadzenie krok po kroku, punkty i statystyki. Za darmo, na Androida." />
+    <meta name="theme-color" content="#5e3f2a" />
     <link rel="icon" type="image/svg+xml" href="icon.svg" />
     <meta property="og:title" content="Nawykomator" />
-    <meta property="og:description" content="Nawyki, pętle nagrań i przypomnienia – na Androida, za darmo." />
+    <meta property="og:description" content="Codzienne nawyki z nagrań, filmów i notatek – z przypomnieniami i punktami." />
     <meta property="og:image" content="icon-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Bitter:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #f5f0e6; --surface: #fffdf8; --ink: #1d2721; --ink-2: #56625a; --line: #e2d9c7;
-        --primary: #2f6b4f; --primary-ink: #fff; --primary-soft: #dcebe1; --gold: #c98a12; --gold-soft: #f8ebcc;
+        --paper: #eef0ea;
+        --surface: #fcfcf9;
+        --surface-2: #e4e8df;
+        --bark: #26241f;
+        --bark-2: #575449;
+        --line: #d5d9cd;
+        --moss: #34583a;
+        --moss-ink: #f7f5ee;
+        --sage: #d9e4d2;
+        --leaf: #6f9a55;
+        --oak: #93602f;
+        --oak-soft: #f1e6d6;
+        --clay: #a3402d;
+        --clay-soft: #f5e1db;
+        --walnut: #5e3f2a;
+        --walnut-2: #7a5639;
+        --plank-ink: #fbf4e8;
+        --head: 'Bitter', Georgia, serif;
+        --body: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.09 0 0 0 0 0.04 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
       }
       @media (prefers-color-scheme: dark) {
-        :root { --bg: #111613; --surface: #1a211c; --ink: #eaf0eb; --ink-2: #9caaa1; --line: #2d3830;
-          --primary: #5fb488; --primary-ink: #0d1a12; --primary-soft: #1f3a2b; --gold: #e9b54a; --gold-soft: #3a2f16; }
+        :root {
+          --paper: #151813; --surface: #1e221c; --surface-2: #283026; --bark: #ecebe4; --bark-2: #aeb2a6;
+          --line: #333b31; --moss: #8fbd88; --moss-ink: #12180f; --sage: #273727; --leaf: #9cc77f;
+          --oak: #d9a66f; --oak-soft: #372a1c; --clay: #ee8a74; --clay-soft: #3b231d; --walnut: #3b2819; --walnut-2: #4c3421;
+        }
       }
       * { box-sizing: border-box; }
-      body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; line-height: 1.55; }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
-      header.top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
-      .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; color: inherit; text-decoration: none; }
-      .brand img { width: 36px; height: 36px; }
-      .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding: 40px 0 64px; }
-      h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 16px; }
-      h1 em { font-style: normal; color: var(--primary); }
-      .lead { font-size: 1.15rem; color: var(--ink-2); margin: 0 0 28px; max-width: 34em; }
-      .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; font-weight: 700; text-decoration: none; border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
-      .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); font-size: 1.05rem; }
-      .btn.coffee { background: #ffdd00; border-color: #ffdd00; color: #2b1b00; }
-      .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-      .meta { color: var(--ink-2); font-size: 0.9rem; margin-top: 12px; }
-      .phone { justify-self: center; width: 280px; border-radius: 40px; background: var(--surface); border: 10px solid var(--ink); padding: 22px 16px; box-shadow: 0 30px 60px rgba(30, 40, 30, 0.18); }
-      .p-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
-      .p-head small { display: block; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 700; }
-      .p-head b { font-size: 1.25rem; }
-      .p-score { width: 54px; height: 54px; border-radius: 50%; background: var(--gold-soft); color: var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; line-height: 1; }
-      .p-score span { font-size: 0.6rem; }
-      .p-card { position: relative; border: 1px solid var(--line); border-radius: 16px; padding: 12px 12px 12px 18px; margin-bottom: 10px; overflow: hidden; background: var(--bg); }
-      .p-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--c, var(--primary)); }
-      .p-card b { display: block; font-size: 0.9rem; }
-      .p-chips { display: flex; gap: 4px; margin-top: 6px; }
-      .p-chips span { font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); }
-      .p-chips span.l { background: #f7e0da; color: #b4412f; }
-      .p-btns { display: flex; gap: 6px; margin-top: 8px; }
-      .p-btns span { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 700; padding: 7px 0; border-radius: 99px; background: var(--primary); color: var(--primary-ink); }
-      .p-btns span + span { background: var(--primary-soft); color: var(--primary); }
-      section { padding: 56px 0; border-top: 1px solid var(--line); }
-      h2 { font-size: 1.8rem; letter-spacing: -0.01em; margin: 0 0 24px; }
-      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-      .feat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
-      .feat .ic { font-size: 1.6rem; }
-      .feat h3 { margin: 8px 0 6px; font-size: 1.05rem; }
-      .feat p { margin: 0; color: var(--ink-2); font-size: 0.95rem; }
-      ol.steps { padding-left: 1.2em; max-width: 44em; }
-      ol.steps li { margin-bottom: 10px; }
-      .note { background: var(--gold-soft); border-radius: 14px; padding: 14px 16px; max-width: 44em; }
-      .coffee-box { text-align: center; }
-      footer { padding: 32px 0 48px; color: var(--ink-2); font-size: 0.9rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+      html { scroll-behavior: smooth; }
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+      body { margin: 0; background: var(--paper); color: var(--bark); font: 17px/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+      h1, h2, h3 { font-family: var(--head); line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+      p { margin: 0; }
+      a { color: var(--moss); }
+      :focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; border-radius: 6px; }
+      .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+      .icon { width: 22px; height: 22px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+      /* nagłówek */
+      .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+      .brand { display: flex; align-items: center; gap: 10px; color: var(--bark); text-decoration: none; font: 700 1.2rem var(--head); }
+      .brand img { width: 40px; height: 40px; border-radius: 10px; }
+      .top nav { display: flex; align-items: center; gap: 22px; }
+      .top nav a { color: var(--bark-2); text-decoration: none; font-weight: 700; }
+      .top nav a:hover { color: var(--bark); }
+
+      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 22px; border-radius: 12px; font-weight: 700; text-decoration: none; border: 1px solid var(--line); background: var(--surface); color: var(--bark); }
+      .btn.primary { background: var(--moss); border-color: var(--moss); color: var(--moss-ink); font-size: 1.05rem; }
+      .btn.oak { background: var(--oak); border-color: var(--oak); color: #fffaf2; }
+      .btn.small { min-height: 42px; padding: 0 16px; font-size: 0.95rem; }
+
+      /* hero */
+      .hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; padding: 40px 0 72px; }
+      .hero h1 { font-size: clamp(2.3rem, 5.2vw, 3.6rem); font-weight: 700; margin-bottom: 18px; }
+      .lead { font-size: 1.18rem; color: var(--bark-2); max-width: 32em; margin-bottom: 30px; }
+      .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+      .meta { color: var(--bark-2); font-size: 0.95rem; margin-top: 14px; }
+
+      /* telefon w hero – ten sam wygląd co apka */
+      .phone { justify-self: center; width: 300px; background: var(--paper); border: 10px solid #23201b; border-radius: 42px; padding: 18px 14px 20px; box-shadow: 0 40px 70px -30px rgba(50, 35, 20, 0.55); }
+      .plank { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 14px 16px 18px; border-radius: 18px; color: var(--plank-ink); background: var(--grain), linear-gradient(176deg, var(--walnut-2), var(--walnut)); background-size: 480px 240px, cover; }
+      .plank small { opacity: 0.85; font-size: 0.78rem; display: block; }
+      .plank b { font: 700 1.3rem var(--head); display: block; margin: 2px 0 8px; }
+      .plank-leaves { display: flex; gap: 2px; align-items: center; font-size: 0.78rem; font-weight: 700; }
+      .plank-leaves svg { width: 16px; height: 16px; fill: none; stroke: rgba(251, 244, 232, 0.6); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+      .plank-leaves svg.on { stroke: #cfe6b4; fill: #cfe6b4; }
+      .plank-leaves span { margin-left: 6px; white-space: nowrap; }
+      .rings { position: relative; width: 70px; height: 70px; flex-shrink: 0; }
+      .rings svg { position: absolute; inset: 0; }
+      .rings ellipse { fill: none; stroke: rgba(251, 236, 210, 0.55); stroke-width: 1.6; }
+      .rings strong { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; font: 700 1.35rem/1 var(--head); }
+      .rings strong small { font: 600 0.65rem var(--body); opacity: 0.85; margin-top: 2px; }
+      .m-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 12px 12px 16px; margin-top: 10px; overflow: hidden; }
+      .m-card::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--c, var(--moss)); }
+      .m-card b { font: 700 0.98rem var(--head); }
+      .m-chips { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+      .m-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--bark-2); }
+      .m-chip.ok { background: var(--sage); color: var(--moss); }
+      .m-chip.late { background: var(--clay-soft); color: var(--clay); }
+      .m-chip svg { width: 12px; height: 12px; }
+      .m-btns { display: flex; gap: 6px; margin-top: 10px; }
+      .m-btn { flex: 1; white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.74rem; font-weight: 700; padding: 8px 0; border-radius: 9px; background: var(--moss); color: var(--moss-ink); }
+      .m-btn.alt { background: var(--sage); color: var(--moss); }
+      .m-btn svg { width: 13px; height: 13px; }
+
+      /* sekcje */
+      section { padding: 72px 0; border-top: 1px solid var(--line); }
+      .sec-head { max-width: 40em; margin-bottom: 36px; }
+      .sec-head h2 { font-size: clamp(1.8rem, 3.4vw, 2.4rem); margin-bottom: 10px; }
+      .sec-head p { color: var(--bark-2); font-size: 1.08rem; }
+
+      .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 48px; list-style: none; margin: 0; padding: 0; }
+      .features li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; }
+      .f-ic { width: 48px; height: 48px; border-radius: 12px; background: var(--sage); color: var(--moss); display: flex; align-items: center; justify-content: center; }
+      .features h3 { font-size: 1.15rem; margin-bottom: 4px; }
+      .features p { color: var(--bark-2); }
+
+      /* poradnik – sekwencja kroków połączona "pnączem" */
+      .guide { list-style: none; margin: 0; padding: 0; position: relative; }
+      .guide::before { content: ''; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; background: linear-gradient(var(--leaf), var(--moss)); opacity: 0.5; }
+      .g-step { position: relative; display: grid; grid-template-columns: 44px 1fr minmax(0, 340px); gap: 24px; align-items: start; padding-bottom: 44px; }
+      .g-step:last-child { padding-bottom: 0; }
+      .g-num { width: 44px; height: 44px; border-radius: 50%; background: var(--moss); color: var(--moss-ink); font: 700 1.15rem var(--head); display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; box-shadow: 0 0 0 6px var(--paper); }
+      .g-text h3 { font-size: 1.3rem; margin: 8px 0 8px; }
+      .g-text p { color: var(--bark-2); max-width: 34em; }
+      .g-text p + p { margin-top: 8px; }
+      .g-text strong { color: var(--bark); }
+      .shot { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; font-size: 0.88rem; box-shadow: 0 10px 24px -18px rgba(40, 30, 15, 0.5); }
+      .shot-label { display: block; font-weight: 700; color: var(--bark-2); font-size: 0.78rem; margin-bottom: 6px; }
+      .field { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; font-weight: 600; }
+      .swatches { display: flex; gap: 6px; }
+      .swatches i { width: 20px; height: 20px; border-radius: 50%; display: block; }
+      .s-step { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--paper); border-radius: 8px; margin-bottom: 6px; font-weight: 700; }
+      .s-step .n { width: 22px; height: 22px; border-radius: 50%; background: var(--sage); color: var(--moss); font: 700 0.75rem var(--head); display: flex; align-items: center; justify-content: center; }
+      .s-step span.x { margin-left: auto; color: var(--bark-2); font-weight: 600; }
+      .s-step .icon { width: 16px; height: 16px; color: var(--moss); }
+      .days { display: flex; gap: 4px; margin-bottom: 10px; }
+      .days i { width: 28px; height: 28px; border-radius: 50%; background: var(--moss); color: var(--moss-ink); font-style: normal; font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+      .days i.off { background: var(--paper); color: var(--bark-2); border: 1px solid var(--line); }
+      .notif { display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+      .notif img { width: 28px; height: 28px; border-radius: 7px; }
+      .notif b { display: block; }
+      .notif small { color: var(--bark-2); }
+      .notif-btns { grid-column: 2; display: flex; gap: 14px; margin-top: 6px; font-weight: 700; color: var(--moss); font-size: 0.82rem; }
+      .snooze { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+      .snooze span { text-align: center; padding: 8px 0; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; }
+      .counter { text-align: center; font: 700 2.2rem/1 var(--head); color: var(--moss); margin: 4px 0 2px; }
+      .counter + small { display: block; text-align: center; color: var(--bark-2); margin-bottom: 10px; }
+      .bar { display: flex; gap: 3px; margin-bottom: 10px; }
+      .bar i { flex: 1; height: 5px; border-radius: 9px; background: var(--surface-2); }
+      .bar i.d { background: var(--leaf); } .bar i.c { background: var(--moss); }
+      .wide-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px; border-radius: 9px; background: var(--moss); color: var(--moss-ink); font-weight: 700; }
+      .wide-btn svg { width: 15px; height: 15px; }
+      .check { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--paper); border-radius: 8px; margin-bottom: 6px; font-weight: 700; }
+      .check i { width: 18px; height: 18px; border-radius: 4px; background: var(--moss); display: flex; align-items: center; justify-content: center; }
+      .check i svg { width: 13px; height: 13px; stroke: var(--moss-ink); }
+      .check i.no { background: transparent; border: 2px solid var(--line); }
+      .check em { margin-left: auto; font-style: normal; color: var(--oak); }
+      .check.off { color: var(--bark-2); }
+      .check.off em { color: var(--bark-2); text-decoration: line-through; }
+      .loop-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--paper); margin-bottom: 6px; font-weight: 700; }
+      .loop-row.learned { color: var(--bark-2); text-decoration: line-through; }
+      .loop-row .icon { width: 16px; height: 16px; color: var(--moss); }
+
+      /* instalacja */
+      .install { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+      .install ol { margin: 0; padding-left: 1.3em; display: grid; gap: 12px; }
+      .install li::marker { font-family: var(--head); font-weight: 700; color: var(--moss); }
+      .note { background: var(--oak-soft); border-radius: 14px; padding: 18px 20px; }
+      .note h3 { font-size: 1.1rem; margin-bottom: 6px; }
+      .note p { color: var(--bark-2); }
+      .note p + p { margin-top: 10px; }
+
+      /* deska z kawą */
+      .coffee { margin: 0 0 72px; border-radius: 22px; padding: 40px 36px; color: var(--plank-ink); background: var(--grain), linear-gradient(176deg, var(--walnut-2), var(--walnut)); background-size: 480px 240px, cover; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; box-shadow: inset 0 1px 0 rgba(255, 240, 220, 0.18), 0 20px 40px -24px rgba(60, 35, 15, 0.6); }
+      .coffee h2 { font-size: 1.8rem; margin-bottom: 8px; }
+      .coffee p { opacity: 0.9; max-width: 34em; }
+      .coffee .btn { background: var(--plank-ink); border-color: var(--plank-ink); color: var(--walnut); }
+
+      footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--bark-2); font-size: 0.95rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
       footer a { color: inherit; }
-      @media (max-width: 780px) {
-        .hero { grid-template-columns: 1fr; padding-top: 16px; }
-        .phone { width: 260px; }
-        .grid { grid-template-columns: 1fr; }
-        header.top .btn { display: none; }
+
+      @media (max-width: 860px) {
+        .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 16px; }
+        .features { grid-template-columns: 1fr; }
+        .g-step { grid-template-columns: 44px 1fr; }
+        .shot { grid-column: 2; max-width: 360px; }
+        .install { grid-template-columns: 1fr; }
+        .top nav a:not(.btn) { display: none; }
+      }
+      @media (max-width: 420px) {
+        .phone { width: 280px; }
+        .coffee { padding: 28px 22px; }
       }
     </style>
   </head>
   <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-loop" viewBox="0 0 24 24"><path d="M17 2.5l3 3-3 3M4 11.5v-2a4 4 0 0 1 4-4h12M7 21.5l-3-3 3-3M20 12.5v2a4 4 0 0 1-4 4H4" /></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15ZM10 20.5a2 2 0 0 0 4 0" /></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 5.2v13.6a.6.6 0 0 0 .9.5l10.6-6.8a.6.6 0 0 0 0-1L8.4 4.7a.6.6 0 0 0-.9.5Z" /></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v5l3.2 2" /></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" /></symbol>
+      <symbol id="i-stats" viewBox="0 0 24 24"><path d="M5 20v-8M10.5 20V5M16 20v-5.5M21 20H3" /></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19.5C5 10.5 11 5 20 4c-.5 9-6.5 15.5-15 15.5ZM5 19.5l8.5-8.5" /></symbol>
+      <symbol id="i-video" viewBox="0 0 24 24"><path d="M3.5 6.5h11v11h-11ZM14.5 10.5l6-3.5v10l-6-3.5" /></symbol>
+      <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6.5h14M5 12h14M5 17.5h9" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></symbol>
+      <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8.5h12.5V14a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5ZM16.5 10H18a2.5 2.5 0 0 1 0 5h-1.5M8 3v2.5M12 3v2.5" /></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6Z" /></symbol>
+    </svg>
+
     <div class="wrap">
       <header class="top">
         <a class="brand" href="./"><img src="icon.svg" alt="" /> Nawykomator</a>
-        <a class="btn coffee" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">☕ Postaw kawę</a>
+        <nav aria-label="Menu">
+          <a href="#poradnik">Poradnik</a>
+          <a href="#instalacja">Instalacja</a>
+          <a class="btn oak small" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener"><svg class="icon"><use href="#i-cup" /></svg>Postaw kawę</a>
+        </nav>
       </header>
 
       <div class="hero">
         <div>
-          <h1>Nawykownia w&nbsp;Twoim telefonie. <em>Codziennie, w&nbsp;pętli.</em></h1>
-          <p class="lead">
-            Ułóż zadanie z nagrań, filmów z YouTube i notatek – np. „filmik ×5, potem modlitwa ×3”. Nawykomator przypomni o
-            nim o właściwej godzinie, przeprowadzi Cię krok po kroku i policzy punkty.
-          </p>
+          <h1>Codzienne nawyki, krok&nbsp;po&nbsp;kroku</h1>
+          <p class="lead">Ułóż zadanie z nagrań, filmów z YouTube i notatek – na przykład filmik pięć razy, potem modlitwa trzy razy. Nawykomator przypomni o nim o stałej porze, przeprowadzi przez kolejne kroki i policzy punkty.</p>
           <div class="cta">
-            <a class="btn primary" id="download" href="downloads/nawykomator.apk" download>⬇ Pobierz na Androida</a>
-            <a class="btn" href="#instalacja">Jak zainstalować?</a>
+            <a class="btn primary" id="download" href="downloads/nawykomator.apk" download><svg class="icon"><use href="#i-download" /></svg>Pobierz na Androida</a>
+            <a class="btn" href="#poradnik">Jak zacząć</a>
           </div>
-          <p class="meta" id="version">Android 7.0 lub nowszy · plik APK · za darmo</p>
+          <p class="meta" id="version">Android 7.0 lub nowszy. Plik APK, bez reklam, za darmo.</p>
         </div>
-        <div class="phone" aria-hidden="true">
-          <div class="p-head">
-            <div><small>Poniedziałek</small><b>Twoje nawyki</b></div>
-            <div class="p-score">30<span>pkt</span></div>
+
+        <div class="phone" aria-label="Podgląd ekranu Dziś w aplikacji">
+          <div class="plank">
+            <div>
+              <small>Poniedziałek, 19 października</small>
+              <b>Dzień dobry</b>
+              <div class="plank-leaves">
+                <svg class="on" viewBox="0 0 24 24"><use href="#i-leaf" /></svg>
+                <svg class="on" viewBox="0 0 24 24"><use href="#i-leaf" /></svg>
+                <svg viewBox="0 0 24 24"><use href="#i-leaf" /></svg>
+                <span>2 z 3 na dziś</span>
+              </div>
+            </div>
+            <div class="rings" aria-hidden="true">
+              <svg viewBox="0 0 100 100"><ellipse cx="49.4" cy="50.7" rx="46" ry="43.7" /><ellipse cx="50.8" cy="49.4" rx="38" ry="36.1" /><ellipse cx="49.4" cy="50.7" rx="30" ry="28.5" /></svg>
+              <strong>45<small>pkt</small></strong>
+            </div>
           </div>
-          <div class="p-card">
+          <div class="m-card">
             <b>Poranna modlitwa</b>
-            <div class="p-chips"><span>✓ 07:00</span><span class="l">! 20:00</span></div>
-            <div class="p-btns"><span>▶ Wykonaj</span><span>✓ Zrobione</span></div>
+            <div class="m-chips">
+              <span class="m-chip ok"><svg class="icon"><use href="#i-check" /></svg>07:00</span>
+              <span class="m-chip late"><svg class="icon"><use href="#i-clock" /></svg>20:00 zaległe</span>
+            </div>
+            <div class="m-btns">
+              <span class="m-btn"><svg class="icon"><use href="#i-play" /></svg>Wykonaj teraz</span>
+              <span class="m-btn alt"><svg class="icon"><use href="#i-check" /></svg>Zrobione</span>
+            </div>
           </div>
-          <div class="p-card" style="--c: #c2410c">
+          <div class="m-card" style="--c: #93602f">
             <b>Rozciąganie</b>
-            <div class="p-chips"><span>12:00</span></div>
-            <div class="p-btns"><span>▶ Wykonaj</span><span>✓ Zrobione</span></div>
-          </div>
-          <div class="p-card" style="--c: #1d4ed8">
-            <b>Słówka – pętla nauki</b>
-            <div class="p-chips"><span>nauczone 4/7</span></div>
+            <div class="m-chips"><span class="m-chip ok"><svg class="icon"><use href="#i-check" /></svg>12:00</span></div>
           </div>
         </div>
       </div>
@@ -115,44 +268,155 @@
 
     <section>
       <div class="wrap">
-        <h2>Co potrafi</h2>
-        <div class="grid">
-          <div class="feat"><div class="ic">🔁</div><h3>Pętle nagrań</h3><p>YouTube, SoundCloud, pliki z telefonu i własne nagrania głosowe – odtwarzane tyle razy, ile ustawisz.</p></div>
-          <div class="feat"><div class="ic">🧭</div><h3>Procedury krok po kroku</h3><p>„Wykonaj teraz” prowadzi przez kolejne kroki: nagranie, tekst do przeczytania, notatkę ze zdjęciami.</p></div>
-          <div class="feat"><div class="ic">🔔</div><h3>Przypomnienia</h3><p>Działają bez internetu. „Odłóż” na 5, 15, 50 minut albo inną godzinę – apka przypomni ponownie.</p></div>
-          <div class="feat"><div class="ic">⭐</div><h3>Punkty za „Zrobione”</h3><p>Punkty tylko za potwierdzone zadania. Odznacz podzadania, których nie zrobiłeś w pełni.</p></div>
-          <div class="feat"><div class="ic">🎙️</div><h3>Notatki głosowe i pętla nauki</h3><p>Nagraj kilka głosówek, słuchaj ich w kółko i wyłączaj te, których już się nauczyłeś. Dyktowanie tekstu też jest.</p></div>
-          <div class="feat"><div class="ic">📊</div><h3>Statystyki</h3><p>Ile zadań z jakich kategorii zrobiłeś w miesiącu, serie dni, najczęściej odtwarzane nagrania i gdzie przerwałeś.</p></div>
+        <div class="sec-head">
+          <h2>Co potrafi</h2>
+          <p>Wszystko działa na telefonie, także bez internetu. Twoje zadania, nagrania i punkty nie trafiają na żaden serwer.</p>
         </div>
-        <p class="meta">Interfejs po polsku i po śląsku. Wszystkie dane zostają na Twoim telefonie.</p>
+        <ul class="features">
+          <li><span class="f-ic"><svg class="icon"><use href="#i-loop" /></svg></span><div><h3>Nagrania w pętli</h3><p>YouTube, SoundCloud, pliki z telefonu i własne nagrania głosowe – odtwarzane tyle razy, ile ustawisz. Powtórzenia liczą się same.</p></div></li>
+          <li><span class="f-ic"><svg class="icon"><use href="#i-play" /></svg></span><div><h3>Prowadzenie krok po kroku</h3><p>„Wykonaj teraz” przechodzi przez kolejne kroki: nagranie, tekst do przeczytania, notatkę ze zdjęciami. Przerwane zadanie dokończysz później.</p></div></li>
+          <li><span class="f-ic"><svg class="icon"><use href="#i-bell" /></svg></span><div><h3>Przypomnienia o stałej porze</h3><p>Raz albo kilka razy dziennie. Gdy nie możesz, odkładasz na 5, 15 lub 50 minut – apka wróci z przypomnieniem.</p></div></li>
+          <li><span class="f-ic"><svg class="icon"><use href="#i-check" /></svg></span><div><h3>Punkty tylko za zrobione</h3><p>Punkty dostajesz po potwierdzeniu. Kroki, które nie wyszły w pełni, możesz odznaczyć.</p></div></li>
+          <li><span class="f-ic"><svg class="icon"><use href="#i-mic" /></svg></span><div><h3>Notatki głosowe i pętla nauki</h3><p>Nagraj kilka głosówek i słuchaj ich w kółko. Te, których już się nauczyłeś, wyłączasz jednym kliknięciem. Tekst możesz też podyktować.</p></div></li>
+          <li><span class="f-ic"><svg class="icon"><use href="#i-stats" /></svg></span><div><h3>Statystyki miesiąca</h3><p>Punkty dzień po dniu, kategorie, serie dni z rzędu, najczęściej odtwarzane nagrania i miejsca, w których przerwałeś.</p></div></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="poradnik">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>Poradnik: pierwsze zadanie</h2>
+          <p>Sześć kroków od instalacji do pierwszych punktów. Po pierwszym uruchomieniu apka pokaże Ci też listę „Pierwsze kroki”, która odhacza się sama.</p>
+        </div>
+        <ol class="guide">
+          <li class="g-step">
+            <span class="g-num">1</span>
+            <div class="g-text">
+              <h3>Utwórz zadanie</h3>
+              <p>Wejdź w <strong>Zadania → Nowe zadanie</strong>. Podaj nazwę i kategorię, np. „Poranna modlitwa” w kategorii „Modlitwa”. Kategorie przydadzą się w statystykach.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <span class="shot-label">Nazwa</span><div class="field">Poranna modlitwa</div>
+              <span class="shot-label">Kategoria</span><div class="field">Modlitwa</div>
+              <div class="swatches"><i style="background:#2f6b4f"></i><i style="background:#93602f"></i><i style="background:#1d4ed8"></i><i style="background:#7c3aed"></i><i style="background:#0f766e"></i></div>
+            </div>
+          </li>
+          <li class="g-step">
+            <span class="g-num">2</span>
+            <div class="g-text">
+              <h3>Dodaj kroki</h3>
+              <p>Krok to jedna czynność. <strong>Nagranie / link</strong> przyjmuje adres z YouTube lub SoundCloud, plik z telefonu albo nagranie głosu. <strong>Tekst</strong> to np. modlitwa do przeczytania, a <strong>Notatka</strong> – instrukcja ze zdjęciami.</p>
+              <p>Przy każdym kroku ustawiasz liczbę powtórzeń i punkty. Krok, którego chwilowo nie chcesz robić, wyłączasz przełącznikiem zamiast go usuwać.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <div class="s-step"><span class="n">1</span><svg class="icon"><use href="#i-video" /></svg>Pieśń poranna<span class="x">×5</span></div>
+              <div class="s-step"><span class="n">2</span><svg class="icon"><use href="#i-text" /></svg>Ojcze nasz<span class="x">×3</span></div>
+              <div class="s-step"><span class="n">3</span><svg class="icon"><use href="#i-mic" /></svg>Intencja dnia<span class="x">×1</span></div>
+            </div>
+          </li>
+          <li class="g-step">
+            <span class="g-num">3</span>
+            <div class="g-text">
+              <h3>Ustaw harmonogram</h3>
+              <p>Wybierz dni i godziny. Każda godzina to jedno wykonanie danego dnia – dwie godziny oznaczają dwa razy dziennie.</p>
+              <p>Ustaw też, co ile minut przypominać, jeśli zadanie nie jest zrobione, i do której godziny.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <div class="days"><i>Pn</i><i>Wt</i><i>Śr</i><i>Cz</i><i>Pt</i><i class="off">So</i><i class="off">Nd</i></div>
+              <span class="shot-label">Godziny</span><div class="field">07:00 &nbsp; 20:00</div>
+              <span class="shot-label">Przypominaj ponownie</span><div class="field">co 1 godz., do 22:00</div>
+            </div>
+          </li>
+          <li class="g-step">
+            <span class="g-num">4</span>
+            <div class="g-text">
+              <h3>Odbierz przypomnienie</h3>
+              <p>O ustalonej porze przyjdzie powiadomienie z trzema przyciskami: <strong>Wykonaj teraz</strong>, <strong>Zrobione</strong> i <strong>Odłóż…</strong></p>
+              <p>Odłożenie nie daje punktów – wybierasz 5, 15 lub 50 minut albo inną godzinę, a apka przypomni ponownie.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <div class="notif"><img src="icon.svg" alt="" /><div><b>Poranna modlitwa</b><small>Czas na zadanie (07:00)</small></div>
+                <div class="notif-btns"><span>Wykonaj teraz</span><span>Zrobione</span><span>Odłóż…</span></div></div>
+              <div class="snooze"><span>5 min</span><span>15 min</span><span>50 min</span></div>
+            </div>
+          </li>
+          <li class="g-step">
+            <span class="g-num">5</span>
+            <div class="g-text">
+              <h3>Wykonaj krok po kroku</h3>
+              <p><strong>Wykonaj teraz</strong> odtwarza kroki po kolei i liczy powtórzenia. Nagrania przechodzą dalej same, tekst zaliczasz przyciskiem.</p>
+              <p>Gdy musisz przerwać, postęp zostaje zapamiętany. Po godzinie przyjdzie przypomnienie, a przy następnym uruchomieniu wybierzesz: kontynuować czy zacząć od nowa.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <div class="bar"><i class="d"></i><i class="c"></i><i></i></div>
+              <span class="shot-label" style="text-align:center">Ojcze nasz</span>
+              <div class="counter">2/3</div><small>powtórzeń</small>
+              <div class="wide-btn"><svg class="icon"><use href="#i-check" /></svg>Zrobione raz</div>
+            </div>
+          </li>
+          <li class="g-step">
+            <span class="g-num">6</span>
+            <div class="g-text">
+              <h3>Potwierdź i zbierz punkty</h3>
+              <p>Na koniec kliknij <strong>Zrobione</strong>. W okienku odznacz kroki, które nie wyszły w pełni – punkty dostaniesz tylko za zaznaczone.</p>
+              <p>Punkty trafiają do statystyk: dzień po dniu, według kategorii i zadań.</p>
+            </div>
+            <div class="shot" aria-hidden="true">
+              <div class="check"><i><svg class="icon"><use href="#i-check" /></svg></i>Pieśń poranna<em>+10</em></div>
+              <div class="check"><i><svg class="icon"><use href="#i-check" /></svg></i>Ojcze nasz<em>+10</em></div>
+              <div class="check off"><i class="no"></i>Intencja dnia<em>+5</em></div>
+              <div class="wide-btn">Zrobione (+20 pkt)</div>
+            </div>
+          </li>
+        </ol>
+
+        <div class="sec-head" style="margin: 64px 0 24px">
+          <h2>Pętla nauki</h2>
+          <p>W <strong>Notatkach</strong> nagraj kilka głosówek – na przykład słówka albo fragmenty tekstu do zapamiętania – i włącz <strong>Pętlę nauki</strong>. Nagrania grają w kółko. Gdy któreś już umiesz, oznacz je jako nauczone, a pętla gra dalej bez niego.</p>
+        </div>
+        <div class="shot" style="max-width: 380px" aria-hidden="true">
+          <div class="loop-row"><svg class="icon"><use href="#i-mic" /></svg>Słówka – część 1</div>
+          <div class="loop-row learned"><svg class="icon"><use href="#i-check" /></svg>Słówka – część 2</div>
+          <div class="loop-row"><svg class="icon"><use href="#i-mic" /></svg>Słówka – część 3</div>
+        </div>
       </div>
     </section>
 
     <section id="instalacja">
-      <div class="wrap">
-        <h2>Instalacja</h2>
-        <ol class="steps">
-          <li>Na telefonie z Androidem kliknij <strong>Pobierz na Androida</strong>.</li>
-          <li>Otwórz pobrany plik <code>nawykomator.apk</code>. Jeśli telefon zapyta – zezwól przeglądarce na <em>instalowanie nieznanych aplikacji</em>.</li>
-          <li>Przy pierwszym uruchomieniu zezwól na <strong>powiadomienia</strong> i <strong>alarmy i przypomnienia</strong> – inaczej apka nie przypomni o zadaniach.</li>
-          <li>Na Xiaomi, Samsungu i Huawei ustaw w ustawieniach baterii dla Nawykomatora „Bez ograniczeń”.</li>
-        </ol>
-        <p class="note">Apka nie jest (jeszcze) w Sklepie Play, więc Google Play Protect może wyświetlić ostrzeżenie o nieznanym deweloperze. To normalne dla aplikacji instalowanych z pliku.</p>
-        <p class="meta">Aktualizacje: apka sama sprawdza, czy jest nowsza wersja, i pokazuje przycisk pobierania. Twoje dane zostają.</p>
-      </div>
-    </section>
-
-    <section>
-      <div class="wrap coffee-box">
-        <h2>Podoba Ci się?</h2>
-        <p class="lead" style="margin: 0 auto 24px">Nawykomator jest darmowy i bez reklam. Jeśli pomaga Ci trzymać się nawyków – postaw mi kawę ☕</p>
-        <a class="btn coffee" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">☕ Postaw kawę</a>
+      <div class="wrap install">
+        <div>
+          <div class="sec-head" style="margin-bottom: 20px">
+            <h2>Instalacja</h2>
+          </div>
+          <ol>
+            <li>Na telefonie z Androidem kliknij <strong>Pobierz na Androida</strong>.</li>
+            <li>Otwórz pobrany plik <code>nawykomator.apk</code>. Jeśli telefon zapyta, zezwól przeglądarce na instalowanie aplikacji z tego źródła.</li>
+            <li>Przy pierwszym uruchomieniu zgódź się na <strong>powiadomienia</strong> oraz <strong>alarmy i przypomnienia</strong>.</li>
+            <li>Na telefonach Xiaomi, Samsung i Huawei ustaw dla Nawykomatora baterię na „Bez ograniczeń”, żeby przypomnienia przychodziły punktualnie.</li>
+          </ol>
+          <p style="margin-top: 24px">
+            <a class="btn primary" href="downloads/nawykomator.apk" download><svg class="icon"><use href="#i-download" /></svg>Pobierz na Androida</a>
+          </p>
+        </div>
+        <div class="note">
+          <h3>Ostrzeżenie Play Protect</h3>
+          <p>Aplikacja nie jest jeszcze w Sklepie Play, więc przy instalacji z pliku Android może pokazać ostrzeżenie o nieznanym deweloperze. To standardowy komunikat dla aplikacji spoza sklepu.</p>
+          <p>Aktualizacje: apka sama sprawdza, czy jest nowa wersja, i pokazuje przycisk pobierania. Dane zostają na telefonie.</p>
+        </div>
       </div>
     </section>
 
     <div class="wrap">
+      <div class="coffee">
+        <div>
+          <h2>Nawykomator jest darmowy</h2>
+          <p>Bez reklam i bez zbierania danych. Jeśli pomaga Ci trzymać się nawyków, możesz postawić mi kawę.</p>
+        </div>
+        <a class="btn" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener"><svg class="icon"><use href="#i-cup" /></svg>Postaw kawę</a>
+      </div>
       <footer>
-        <span>© <span id="year">2026</span> Michał Lasota · Nawykomator</span>
+        <span>© <span id="year">2026</span> Michał Lasota</span>
         <a href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">buycoffee.to/elmigu</a>
       </footer>
     </div>
@@ -162,9 +426,9 @@
       fetch('version.json', { cache: 'no-store' })
         .then((r) => r.json())
         .then((v) => {
-          if (v.apk) document.getElementById('download').href = v.apk;
+          if (v.apk) document.querySelectorAll('a[download]').forEach((a) => (a.href = v.apk));
           document.getElementById('version').textContent =
-            'Wersja ' + v.version + (v.date ? ' (' + v.date + ')' : '') + ' · Android 7.0 lub nowszy · plik APK · za darmo';
+            'Wersja ' + v.version + (v.date ? ' z ' + v.date.split('-').reverse().join('.') : '') + '. Android 7.0 lub nowszy, plik APK, bez reklam, za darmo.';
         })
         .catch(() => {});
     </script>
