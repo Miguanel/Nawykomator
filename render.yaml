@@ -1,0 +1,19 @@
+# Blueprint dla Render.com – strona do pobierania APK (static site, zawsze aktywna, darmowa).
+services:
+  - type: web
+    name: nawykomator
+    runtime: static
+    rootDir: site
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      # apka sprawdza version.json z WebView – potrzebny CORS
+      - path: /version.json
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /version.json
+        name: Cache-Control
+        value: no-cache
+      - path: /downloads/*
+        name: Content-Type
+        value: application/vnd.android.package-archive

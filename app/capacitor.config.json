@@ -1,0 +1,14 @@
+{
+  "appId": "pl.elmigu.nawykomator",
+  "appName": "Nawykomator",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_nawyk",
+      "iconColor": "#2F6B4F"
+    }
+  }
+}

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nawykomator – aplikacja do nawyków, pętli i przypomnień</title>
+    <meta name="description" content="Nawykomator: zapętlaj nagrania z YouTube, SoundCloud i telefonu, układaj z nich codzienne zadania, zbieraj punkty i nie zapominaj dzięki przypomnieniom." />
+    <meta name="theme-color" content="#2f6b4f" />
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <meta property="og:title" content="Nawykomator" />
+    <meta property="og:description" content="Nawyki, pętle nagrań i przypomnienia – na Androida, za darmo." />
+    <meta property="og:image" content="icon-192.png" />
+    <style>
+      :root {
+        --bg: #f5f0e6; --surface: #fffdf8; --ink: #1d2721; --ink-2: #56625a; --line: #e2d9c7;
+        --primary: #2f6b4f; --primary-ink: #fff; --primary-soft: #dcebe1; --gold: #c98a12; --gold-soft: #f8ebcc;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #111613; --surface: #1a211c; --ink: #eaf0eb; --ink-2: #9caaa1; --line: #2d3830;
+          --primary: #5fb488; --primary-ink: #0d1a12; --primary-soft: #1f3a2b; --gold: #e9b54a; --gold-soft: #3a2f16; }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; line-height: 1.55; }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+      header.top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; color: inherit; text-decoration: none; }
+      .brand img { width: 36px; height: 36px; }
+      .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding: 40px 0 64px; }
+      h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 16px; }
+      h1 em { font-style: normal; color: var(--primary); }
+      .lead { font-size: 1.15rem; color: var(--ink-2); margin: 0 0 28px; max-width: 34em; }
+      .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; font-weight: 700; text-decoration: none; border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+      .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); font-size: 1.05rem; }
+      .btn.coffee { background: #ffdd00; border-color: #ffdd00; color: #2b1b00; }
+      .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+      .meta { color: var(--ink-2); font-size: 0.9rem; margin-top: 12px; }
+      .phone { justify-self: center; width: 280px; border-radius: 40px; background: var(--surface); border: 10px solid var(--ink); padding: 22px 16px; box-shadow: 0 30px 60px rgba(30, 40, 30, 0.18); }
+      .p-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+      .p-head small { display: block; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 700; }
+      .p-head b { font-size: 1.25rem; }
+      .p-score { width: 54px; height: 54px; border-radius: 50%; background: var(--gold-soft); color: var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; line-height: 1; }
+      .p-score span { font-size: 0.6rem; }
+      .p-card { position: relative; border: 1px solid var(--line); border-radius: 16px; padding: 12px 12px 12px 18px; margin-bottom: 10px; overflow: hidden; background: var(--bg); }
+      .p-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--c, var(--primary)); }
+      .p-card b { display: block; font-size: 0.9rem; }
+      .p-chips { display: flex; gap: 4px; margin-top: 6px; }
+      .p-chips span { font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); }
+      .p-chips span.l { background: #f7e0da; color: #b4412f; }
+      .p-btns { display: flex; gap: 6px; margin-top: 8px; }
+      .p-btns span { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 700; padding: 7px 0; border-radius: 99px; background: var(--primary); color: var(--primary-ink); }
+      .p-btns span + span { background: var(--primary-soft); color: var(--primary); }
+      section { padding: 56px 0; border-top: 1px solid var(--line); }
+      h2 { font-size: 1.8rem; letter-spacing: -0.01em; margin: 0 0 24px; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .feat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+      .feat .ic { font-size: 1.6rem; }
+      .feat h3 { margin: 8px 0 6px; font-size: 1.05rem; }
+      .feat p { margin: 0; color: var(--ink-2); font-size: 0.95rem; }
+      ol.steps { padding-left: 1.2em; max-width: 44em; }
+      ol.steps li { margin-bottom: 10px; }
+      .note { background: var(--gold-soft); border-radius: 14px; padding: 14px 16px; max-width: 44em; }
+      .coffee-box { text-align: center; }
+      footer { padding: 32px 0 48px; color: var(--ink-2); font-size: 0.9rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+      footer a { color: inherit; }
+      @media (max-width: 780px) {
+        .hero { grid-template-columns: 1fr; padding-top: 16px; }
+        .phone { width: 260px; }
+        .grid { grid-template-columns: 1fr; }
+        header.top .btn { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <a class="brand" href="./"><img src="icon.svg" alt="" /> Nawykomator</a>
+        <a class="btn coffee" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">☕ Postaw kawę</a>
+      </header>
+
+      <div class="hero">
+        <div>
+          <h1>Nawykownia w&nbsp;Twoim telefonie. <em>Codziennie, w&nbsp;pętli.</em></h1>
+          <p class="lead">
+            Ułóż zadanie z nagrań, filmów z YouTube i notatek – np. „filmik ×5, potem modlitwa ×3”. Nawykomator przypomni o
+            nim o właściwej godzinie, przeprowadzi Cię krok po kroku i policzy punkty.
+          </p>
+          <div class="cta">
+            <a class="btn primary" id="download" href="downloads/nawykomator.apk" download>⬇ Pobierz na Androida</a>
+            <a class="btn" href="#instalacja">Jak zainstalować?</a>
+          </div>
+          <p class="meta" id="version">Android 7.0 lub nowszy · plik APK · za darmo</p>
+        </div>
+        <div class="phone" aria-hidden="true">
+          <div class="p-head">
+            <div><small>Poniedziałek</small><b>Twoje nawyki</b></div>
+            <div class="p-score">30<span>pkt</span></div>
+          </div>
+          <div class="p-card">
+            <b>Poranna modlitwa</b>
+            <div class="p-chips"><span>✓ 07:00</span><span class="l">! 20:00</span></div>
+            <div class="p-btns"><span>▶ Wykonaj</span><span>✓ Zrobione</span></div>
+          </div>
+          <div class="p-card" style="--c: #c2410c">
+            <b>Rozciąganie</b>
+            <div class="p-chips"><span>12:00</span></div>
+            <div class="p-btns"><span>▶ Wykonaj</span><span>✓ Zrobione</span></div>
+          </div>
+          <div class="p-card" style="--c: #1d4ed8">
+            <b>Słówka – pętla nauki</b>
+            <div class="p-chips"><span>nauczone 4/7</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <div class="wrap">
+        <h2>Co potrafi</h2>
+        <div class="grid">
+          <div class="feat"><div class="ic">🔁</div><h3>Pętle nagrań</h3><p>YouTube, SoundCloud, pliki z telefonu i własne nagrania głosowe – odtwarzane tyle razy, ile ustawisz.</p></div>
+          <div class="feat"><div class="ic">🧭</div><h3>Procedury krok po kroku</h3><p>„Wykonaj teraz” prowadzi przez kolejne kroki: nagranie, tekst do przeczytania, notatkę ze zdjęciami.</p></div>
+          <div class="feat"><div class="ic">🔔</div><h3>Przypomnienia</h3><p>Działają bez internetu. „Odłóż” na 5, 15, 50 minut albo inną godzinę – apka przypomni ponownie.</p></div>
+          <div class="feat"><div class="ic">⭐</div><h3>Punkty za „Zrobione”</h3><p>Punkty tylko za potwierdzone zadania. Odznacz podzadania, których nie zrobiłeś w pełni.</p></div>
+          <div class="feat"><div class="ic">🎙️</div><h3>Notatki głosowe i pętla nauki</h3><p>Nagraj kilka głosówek, słuchaj ich w kółko i wyłączaj te, których już się nauczyłeś. Dyktowanie tekstu też jest.</p></div>
+          <div class="feat"><div class="ic">📊</div><h3>Statystyki</h3><p>Ile zadań z jakich kategorii zrobiłeś w miesiącu, serie dni, najczęściej odtwarzane nagrania i gdzie przerwałeś.</p></div>
+        </div>
+        <p class="meta">Interfejs po polsku i po śląsku. Wszystkie dane zostają na Twoim telefonie.</p>
+      </div>
+    </section>
+
+    <section id="instalacja">
+      <div class="wrap">
+        <h2>Instalacja</h2>
+        <ol class="steps">
+          <li>Na telefonie z Androidem kliknij <strong>Pobierz na Androida</strong>.</li>
+          <li>Otwórz pobrany plik <code>nawykomator.apk</code>. Jeśli telefon zapyta – zezwól przeglądarce na <em>instalowanie nieznanych aplikacji</em>.</li>
+          <li>Przy pierwszym uruchomieniu zezwól na <strong>powiadomienia</strong> i <strong>alarmy i przypomnienia</strong> – inaczej apka nie przypomni o zadaniach.</li>
+          <li>Na Xiaomi, Samsungu i Huawei ustaw w ustawieniach baterii dla Nawykomatora „Bez ograniczeń”.</li>
+        </ol>
+        <p class="note">Apka nie jest (jeszcze) w Sklepie Play, więc Google Play Protect może wyświetlić ostrzeżenie o nieznanym deweloperze. To normalne dla aplikacji instalowanych z pliku.</p>
+        <p class="meta">Aktualizacje: apka sama sprawdza, czy jest nowsza wersja, i pokazuje przycisk pobierania. Twoje dane zostają.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap coffee-box">
+        <h2>Podoba Ci się?</h2>
+        <p class="lead" style="margin: 0 auto 24px">Nawykomator jest darmowy i bez reklam. Jeśli pomaga Ci trzymać się nawyków – postaw mi kawę ☕</p>
+        <a class="btn coffee" href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">☕ Postaw kawę</a>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <span>© <span id="year">2026</span> Michał Lasota · Nawykomator</span>
+        <a href="https://buycoffee.to/elmigu" target="_blank" rel="noopener">buycoffee.to/elmigu</a>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+      fetch('version.json', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((v) => {
+          if (v.apk) document.getElementById('download').href = v.apk;
+          document.getElementById('version').textContent =
+            'Wersja ' + v.version + (v.date ? ' (' + v.date + ')' : '') + ' · Android 7.0 lub nowszy · plik APK · za darmo';
+        })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+# zależności i buildy
+node_modules/
+app/dist/
+app/android/app/build/
+app/android/build/
+app/android/.gradle/
+app/android/app/release/
+app/android/local.properties
+app/android/capacitor-cordova-android-plugins/
+*.log
+
+# KLUCZE PODPISU – nigdy do repo!
+*.jks
+*.keystore
+keystore.properties
+
+# IDE / Python
+.idea/
+venv/
+.vscode/
+.DS_Store
+Thumbs.db
