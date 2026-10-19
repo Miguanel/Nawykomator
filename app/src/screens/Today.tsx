@@ -1,6 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { useApp } from '../app-context';
-import { Empty } from '../components/ui';
+import { GuideCard } from '../components/GuideCard';
+import { Icon } from '../components/Icon';
+import { Empty, LeafProgress, TreeRings } from '../components/ui';
 import * as db from '../db/db';
 import type { RunProgress, Task } from '../db/types';
 import { DAY_KEYS, t, tn } from '../i18n';
@@ -11,20 +13,40 @@ import { adhocKey, slotsForDay, type Slot } from '../lib/schedule';
 import { addDays, hhmm, startOfDay, sum } from '../lib/util';
 import { checkForUpdate, type UpdateInfo } from '../lib/update';
 
+function greeting(now: Date): string {
+  const h = now.getHours();
+  if (h < 5) return t('today.hiNight');
+  if (h < 12) return t('today.hiMorning');
+  if (h < 18) return t('today.hiDay');
+  return t('today.hiEvening');
+}
+
 function SlotChip({ slot, now }: { slot: Slot; now: Date }) {
-  let cls = 'chip';
-  let label = slot.time;
-  if (slot.done) {
-    cls += ' ok';
-    label = `✓ ${slot.time}`;
-  } else if (slot.snoozedUntil && slot.snoozedUntil > now.getTime()) {
-    cls += ' snoozed';
-    label = `${slot.snoozeReason === 'interrupted' ? '↻' : '💤'} ${slot.time} → ${hhmm(new Date(slot.snoozedUntil))}`;
-  } else if (slot.at <= now) {
-    cls += ' late';
-    label = `! ${slot.time}`;
-  }
-  return <span className={cls}>{label}</span>;
+  if (slot.done)
+    return (
+      <span className="chip ok">
+        <Icon name="check" size={14} /> {slot.time}
+      </span>
+    );
+  if (slot.snoozedUntil && slot.snoozedUntil > now.getTime())
+    return (
+      <span className="chip snoozed" title={slot.snoozeReason === 'interrupted' ? t('today.resumeAt') : t('today.snoozedTo')}>
+        <Icon name={slot.snoozeReason === 'interrupted' ? 'restart' : 'clock'} size={14} /> {slot.time}
+        <span className="chip-sub">{t('today.until', { time: hhmm(new Date(slot.snoozedUntil)) })}</span>
+      </span>
+    );
+  if (slot.at <= now)
+    return (
+      <span className="chip late">
+        <Icon name="clock" size={14} /> {slot.time}
+        <span className="chip-sub">{t('today.overdue')}</span>
+      </span>
+    );
+  return (
+    <span className="chip">
+      <Icon name="clock" size={14} /> {slot.time}
+    </span>
+  );
 }
 
 function TaskCard({ task, slots, progress, now }: { task: Task; slots: Slot[]; progress?: RunProgress; now: Date }) {
@@ -38,15 +60,19 @@ function TaskCard({ task, slots, progress, now }: { task: Task; slots: Slot[]; p
   return (
     <article className={`task-card ${allDone ? 'all-done' : ''}`} style={{ '--task-color': task.color } as CSSProperties}>
       <div className="task-card-top">
-        <div>
+        <div className="task-card-title">
           <h3>{task.title}</h3>
           <p className="meta">
             {task.category && <span className="cat">{task.category}</span>}
             <span>{tn('today.steps', steps.length)}</span>
-            <span>· {t('today.upTo', { n: maxPts })}</span>
+            <span className="pts-label">{t('today.upTo', { n: maxPts })}</span>
           </p>
         </div>
-        {allDone && <span className="badge-done">✓</span>}
+        {allDone && (
+          <span className="badge-done" aria-label={t('today.allDone')}>
+            <Icon name="check" size={18} />
+          </span>
+        )}
       </div>
       {slots.length > 0 && (
         <div className="chips">
@@ -57,19 +83,19 @@ function TaskCard({ task, slots, progress, now }: { task: Task; slots: Slot[]; p
       )}
       {progress && (
         <p className="resume-note">
-          ↻ {t('today.interrupted', { n: progress.stepIndex + 1, total: steps.length })}
+          <Icon name="restart" size={16} /> {t('today.interrupted', { n: progress.stepIndex + 1, total: steps.length })}
         </p>
       )}
       <div className="task-actions">
         <button className="btn primary" onClick={() => app.runTask(task, slotKey)} disabled={steps.length === 0}>
-          ▶ {t('action.run')}
+          <Icon name="play" size={16} /> {t('action.run')}
         </button>
         <button className="btn ok" onClick={() => app.openDone(task, slotKey, 'manual')} disabled={steps.length === 0}>
-          ✓ {t('action.done')}
+          <Icon name="check" size={18} /> {t('action.done')}
         </button>
         {!allDone && (
           <button className="btn ghost" onClick={() => app.openSnooze(task, slotKey)}>
-            {t('action.snooze')}
+            <Icon name="clock" size={18} /> {t('action.snooze')}
           </button>
         )}
       </div>
@@ -97,35 +123,31 @@ export function Today() {
   const withSlots = active.map((task) => ({ task, slots: slotsForDay(task, now, events, snoozes) }));
   const scheduled = withSlots.filter((x) => x.slots.length > 0);
   const other = withSlots.filter((x) => x.slots.length === 0);
-  const done = events.filter((e) => e.type === 'done');
-  const points = sum(done.map((e) => e.points));
+  const points = sum(events.filter((e) => e.type === 'done').map((e) => e.points));
   const totalSlots = sum(scheduled.map((x) => x.slots.length));
   const doneSlots = sum(scheduled.map((x) => x.slots.filter((s) => s.done).length));
   const progressOf = (id: string) => progress.find((p) => p.taskId === id);
+  const tomorrow = sum(active.map((x) => slotsForDay(x, addDays(now, 1), [], []).length));
 
   return (
     <div className="screen">
-      <header className="today-head">
-        <div>
-          <p className="eyebrow">
+      <header className="plank">
+        <div className="plank-text">
+          <p className="plank-date">
             {t(DAY_KEYS[now.getDay()])}, {now.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}
           </p>
-          <h1>{t('today.title')}</h1>
+          <h1>{greeting(now)}</h1>
+          {totalSlots > 0 ? (
+            <div className="plank-progress">
+              <LeafProgress done={doneSlots} total={totalSlots} />
+              <span>{t('today.progress', { done: doneSlots, total: totalSlots })}</span>
+            </div>
+          ) : (
+            <p className="plank-sub">{t('today.noPlan')}</p>
+          )}
         </div>
-        <div className="score" aria-label={t('today.points')}>
-          <strong>{points}</strong>
-          <span>{t('common.pts')}</span>
-        </div>
+        <TreeRings points={points} label={t('common.pts')} />
       </header>
-
-      {totalSlots > 0 && (
-        <div className="day-progress" aria-label={t('today.progress', { done: doneSlots, total: totalSlots })}>
-          <div className="bar">
-            <div style={{ width: `${(doneSlots / totalSlots) * 100}%` }} />
-          </div>
-          <span>{t('today.progress', { done: doneSlots, total: totalSlots })}</span>
-        </div>
-      )}
 
       {update && (
         <div className="banner">
@@ -151,15 +173,17 @@ export function Today() {
         </div>
       )}
 
+      <GuideCard />
+
       {active.length === 0 ? (
-        <Empty icon="🌱" text={t('today.empty')}>
+        <Empty icon="sprout" text={t('today.empty')}>
           <button className="btn primary" onClick={() => app.push({ name: 'task-edit' })}>
-            + {t('tasks.new')}
+            <Icon name="plus" size={18} /> {t('tasks.new')}
           </button>
         </Empty>
       ) : (
         <>
-          {scheduled.length === 0 && <p className="muted center">{t('today.nothingToday')}</p>}
+          {scheduled.length > 0 && <h2 className="section-title">{t('today.planned')}</h2>}
           <div className="cards">
             {scheduled.map(({ task, slots }) => (
               <TaskCard key={task.id} task={task} slots={slots} progress={progressOf(task.id)} now={now} />
@@ -175,16 +199,9 @@ export function Today() {
               </div>
             </>
           )}
-          <TomorrowHint tasks={active} now={now} />
+          {tomorrow > 0 && <p className="muted center small">{t('today.tomorrow', { n: tomorrow })}</p>}
         </>
       )}
     </div>
   );
-}
-
-function TomorrowHint({ tasks, now }: { tasks: Task[]; now: Date }) {
-  const tomorrow = addDays(now, 1);
-  const n = sum(tasks.map((x) => slotsForDay(x, tomorrow, [], []).length));
-  if (!n) return null;
-  return <p className="muted center small">{t('today.tomorrow', { n })}</p>;
 }

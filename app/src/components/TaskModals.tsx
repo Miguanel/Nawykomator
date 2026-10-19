@@ -1,3 +1,4 @@
+import { Icon } from './Icon';
 import { useState } from 'react';
 import type { DonePreset } from '../app-context';
 import type { Task } from '../db/types';
@@ -49,7 +50,7 @@ export function DoneModal({
             {t('common.cancel')}
           </button>
           <button className="btn primary" disabled={busy || checked.length === 0} onClick={confirm}>
-            ✓ {t('done.confirm', { n: points })}
+            <Icon name="check" size={18} /> {t('done.confirm', { n: points })}
           </button>
         </>
       }

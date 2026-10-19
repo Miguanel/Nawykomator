@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { t } from '../i18n';
+import { Icon, type IconName } from './Icon';
 
 export function Modal({
   title,
@@ -23,7 +24,7 @@ export function Modal({
         <div className="modal-head">
           <h2>{title}</h2>
           <button className="icon-btn" onClick={onClose} aria-label={t('common.close')}>
-            ✕
+            <Icon name="close" />
           </button>
         </div>
         <div className="modal-body">{children}</div>
@@ -86,7 +87,7 @@ export function Header({ title, onBack, right }: { title: string; onBack?: () =>
     <header className="screen-head">
       {onBack && (
         <button className="icon-btn" onClick={onBack} aria-label={t('common.back')}>
-          ←
+          <Icon name="back" size={22} />
         </button>
       )}
       <h1>{title}</h1>
@@ -95,11 +96,11 @@ export function Header({ title, onBack, right }: { title: string; onBack?: () =>
   );
 }
 
-export function Empty({ icon, text, children }: { icon: string; text: string; children?: ReactNode }) {
+export function Empty({ icon, text, children }: { icon: IconName; text: string; children?: ReactNode }) {
   return (
     <div className="empty">
-      <div className="empty-icon" aria-hidden="true">
-        {icon}
+      <div className="empty-icon">
+        <Icon name={icon} size={30} />
       </div>
       <p>{text}</p>
       {children}
@@ -107,18 +108,56 @@ export function Empty({ icon, text, children }: { icon: string; text: string; ch
   );
 }
 
-const NAV_ICONS: Record<string, ReactNode> = {
-  today: <path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />,
-  tasks: <path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2" />,
-  notes: <path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5" />,
-  stats: <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />,
-  more: <path d="M5 12h.01M12 12h.01M19 12h.01" />,
-};
-
-export function NavIcon({ name }: { name: string }) {
+/** Wskazówka przewodnika – mała ramka z podpowiedzią, którą można zamknąć. */
+export function Tip({ children, onClose }: { children: ReactNode; onClose?: () => void }) {
   return (
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth={name === 'more' ? 3.5 : 1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {NAV_ICONS[name]}
-    </svg>
+    <div className="tip" role="note">
+      <Icon name="sprout" size={20} className="tip-icon" />
+      <div className="tip-body">{children}</div>
+      {onClose && (
+        <button className="icon-btn small" onClick={onClose} aria-label={t('common.close')}>
+          <Icon name="close" size={16} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Punkty narysowane jako słoje drzewa – im więcej punktów, tym więcej słojów. */
+export function TreeRings({ points, label }: { points: number; label: string }) {
+  const rings = Math.min(5, 1 + Math.floor(Math.log2(1 + points / 10)));
+  return (
+    <div className="rings" aria-label={`${points} ${label}`}>
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        {Array.from({ length: 5 }, (_, i) => {
+          const r = 46 - i * 8;
+          return (
+            <ellipse
+              key={i}
+              cx={50 + (i % 2 ? 0.8 : -0.6)}
+              cy={50 + (i % 2 ? -0.6 : 0.7)}
+              rx={r}
+              ry={r * 0.95}
+              className={i < 5 - rings ? 'ring faint' : 'ring'}
+            />
+          );
+        })}
+      </svg>
+      <span className="rings-num">
+        <strong>{points}</strong>
+        <small>{label}</small>
+      </span>
+    </div>
+  );
+}
+
+/** Postęp dnia jako rząd liści: wypełniony liść = zrobione wykonanie. */
+export function LeafProgress({ done, total }: { done: number; total: number }) {
+  return (
+    <div className="leaves" role="img" aria-label={t('today.progress', { done, total })}>
+      {Array.from({ length: total }, (_, i) => (
+        <Icon key={i} name="leaf" size={20} className={i < done ? 'leaf on' : 'leaf'} />
+      ))}
+    </div>
   );
 }

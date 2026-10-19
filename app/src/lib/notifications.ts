@@ -173,7 +173,7 @@ export async function rescheduleAll(): Promise<void> {
       channelId: CHANNEL_ID,
       actionTypeId: ACTION_TYPE,
       smallIcon: 'ic_stat_nawyk',
-      iconColor: '#2F6B4F',
+      iconColor: '#34583A',
       autoCancel: true,
       foreground: true,
       // bez zgody na dokładne alarmy nie otwieramy ekranu ustawień przy każdym planowaniu
@@ -200,7 +200,7 @@ export async function testNotification(taskId: string, slotKey: string, title: s
         channelId: CHANNEL_ID,
         actionTypeId: ACTION_TYPE,
         smallIcon: 'ic_stat_nawyk',
-        iconColor: '#2F6B4F',
+        iconColor: '#34583A',
         foreground: true,
         isExactNotification: perm.exact === 'granted',
         extra: { taskId, slotKey },

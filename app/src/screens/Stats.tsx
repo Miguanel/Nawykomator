@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { getGuide, updateGuide } from '../lib/guide';
+import { Icon } from '../components/Icon';
+import { useEffect, useState } from 'react';
 import { useMediaMap } from '../components/NotePlayer';
 import { Empty, Header } from '../components/ui';
 import * as db from '../db/db';
@@ -28,6 +30,11 @@ function Bars({ rows, unit }: { rows: Row[]; unit: 'points' | 'count' }) {
 }
 
 export function Stats() {
+  useEffect(() => {
+    getGuide().then((g) => {
+      if (!g.visitedStats) updateGuide({ visitedStats: true });
+    });
+  }, []);
   const now = new Date();
   const [ym, setYm] = useState({ y: now.getFullYear(), m: now.getMonth() });
   const from = new Date(ym.y, ym.m, 1).getTime();
@@ -85,7 +92,7 @@ export function Stats() {
       </div>
 
       {s.done === 0 && s.interrupted === 0 ? (
-        <Empty icon="📊" text={t('stats.empty')} />
+        <Empty icon="stats" text={t('stats.empty')} />
       ) : (
         <>
           <h2 className="section-title">{t('stats.daily')}</h2>
@@ -117,7 +124,7 @@ export function Stats() {
                 const n = streak(all, r.key);
                 return n > 1 ? (
                   <li key={r.key}>
-                    🔥 {r.label}: {t('stats.streak', { n })}
+                    <Icon name="leaf" size={16} /> {r.label}: {t('stats.streak', { n })}
                   </li>
                 ) : null;
               })}

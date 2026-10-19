@@ -2,11 +2,13 @@ import { App as CapApp } from '@capacitor/app';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AppContext, type AppApi, type DonePreset, type Route, type TabName } from './app-context';
 import { DoneModal, SnoozeModal } from './components/TaskModals';
-import { Modal, NavIcon } from './components/ui';
+import { Icon } from './components/Icon';
+import { Modal } from './components/ui';
 import * as db from './db/db';
 import type { RunProgress, Task } from './db/types';
 import { t, useLang } from './i18n';
 import { enabledSteps } from './lib/actions';
+import { getGuide } from './lib/guide';
 import {
   initNotifications,
   requestReschedule,
@@ -25,6 +27,8 @@ import { Stats } from './screens/Stats';
 import { TaskEditor } from './screens/TaskEditor';
 import { Tasks } from './screens/Tasks';
 import { Today } from './screens/Today';
+import { Help } from './screens/Help';
+import { Welcome } from './screens/Welcome';
 
 const TABS: TabName[] = ['today', 'tasks', 'notes', 'stats', 'more'];
 
@@ -47,7 +51,7 @@ export default function App() {
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);
     if (toastTimer.current) window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToastMsg(null), 2800);
+    toastTimer.current = window.setTimeout(() => setToastMsg(null), 2400);
   }, []);
 
   const push = useCallback((r: Route) => setStack((s) => [...s, r]), []);
@@ -82,6 +86,13 @@ export default function App() {
     }),
     [route, push, replace, back, tab, toast, runTask],
   );
+
+  // pierwsze uruchomienie → ekran powitalny
+  useEffect(() => {
+    getGuide().then((g) => {
+      if (!g.onboarded) setStack([{ name: 'welcome' }]);
+    });
+  }, []);
 
   // --- powiadomienia ---
   useEffect(() => {
@@ -160,6 +171,12 @@ export default function App() {
     case 'note-play':
       screen = <NotePlay id={route.id} learn={route.learn} />;
       break;
+    case 'welcome':
+      screen = <Welcome />;
+      break;
+    case 'help':
+      screen = <Help />;
+      break;
   }
 
   const startRun = (task: Task, slotKey: string, resume: boolean) => {
@@ -169,14 +186,14 @@ export default function App() {
 
   return (
     <AppContext.Provider value={api}>
-      <div className={`app ${route.name === 'run' ? 'immersive' : ''}`}>
+      <div className={`app ${route.name === 'run' || route.name === 'welcome' ? 'immersive' : ''}`}>
         <main className="main">{screen}</main>
 
         {isTab && (
           <nav className="tabbar" aria-label="Nawigacja">
             {TABS.map((name) => (
               <button key={name} className={rootTab === name ? 'on' : ''} onClick={() => tab(name)} aria-current={rootTab === name ? 'page' : undefined}>
-                <NavIcon name={name} />
+                <Icon name={name} size={24} />
                 <span>{t(`nav.${name}` as 'nav.today')}</span>
               </button>
             ))}
@@ -216,7 +233,7 @@ export default function App() {
             <p>{t('resume.text', { n: modal.progress.stepIndex + 1, total: enabledSteps(modal.task).length })}</p>
             <div className="stack-btns">
               <button className="btn primary big" onClick={() => startRun(modal.task, modal.slotKey, true)}>
-                ↻ {t('resume.continue', { n: modal.progress.stepIndex + 1 })}
+                <Icon name="restart" /> {t('resume.continue', { n: modal.progress.stepIndex + 1 })}
               </button>
               <button
                 className="btn ghost"
@@ -235,10 +252,10 @@ export default function App() {
             <p>{modal.body ?? t('notif.bodyNag')}</p>
             <div className="stack-btns">
               <button className="btn primary big" onClick={() => runTask(modal.task, modal.slotKey)}>
-                ▶ {t('action.run')}
+                <Icon name="play" /> {t('action.run')}
               </button>
               <button className="btn ok big" onClick={() => setModal({ kind: 'done', task: modal.task, slotKey: modal.slotKey, mode: 'manual' })}>
-                ✓ {t('action.done')}
+                <Icon name="check" /> {t('action.done')}
               </button>
               <button className="btn ghost" onClick={() => setModal({ kind: 'snooze', task: modal.task, slotKey: modal.slotKey })}>
                 {t('action.snooze')}

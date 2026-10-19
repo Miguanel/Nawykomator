@@ -1,3 +1,4 @@
+import { Icon } from '../components/Icon';
 import { useApp } from '../app-context';
 import { Empty, Header } from '../components/ui';
 import * as db from '../db/db';
@@ -18,12 +19,12 @@ export function Notes() {
         title={t('notes.title')}
         right={
           <button className="btn primary small" onClick={() => app.push({ name: 'note-edit' })}>
-            + {t('notes.new')}
+            <Icon name="plus" size={18} /> {t('notes.new')}
           </button>
         }
       />
       <p className="hint pad">{t('notes.intro')}</p>
-      {sorted.length === 0 && <Empty icon="🗒️" text={t('notes.empty')} />}
+      {sorted.length === 0 && <Empty icon="note" text={t('notes.empty')} />}
       <ul className="list">
         {sorted.map((n) => {
           const playable = n.blocks.filter(isPlayable);
@@ -36,15 +37,29 @@ export function Notes() {
                 <button className="list-main as-btn" onClick={() => app.push({ name: 'note-edit', id: n.id })}>
                   <strong>{n.title || t('notes.untitled')}</strong>
                   <small>
-                    {playable.length > 0 && `🎙️ ${playable.length} `}
-                    {texts > 0 && `📝 ${texts} `}
-                    {images > 0 && `🖼️ ${images} `}
-                    {playable.length > 0 && `· ${t('notes.learnedOf', { n: learned, total: playable.length })}`}
+                    <span className="counts">
+                      {playable.length > 0 && (
+                        <span>
+                          <Icon name="mic" size={14} /> {playable.length}
+                        </span>
+                      )}
+                      {texts > 0 && (
+                        <span>
+                          <Icon name="text" size={14} /> {texts}
+                        </span>
+                      )}
+                      {images > 0 && (
+                        <span>
+                          <Icon name="image" size={14} /> {images}
+                        </span>
+                      )}
+                      {playable.length > 0 && <span>{t('notes.learnedOf', { n: learned, total: playable.length })}</span>}
+                    </span>
                   </small>
                 </button>
                 {playable.length > 0 && (
                   <button className="btn small" onClick={() => app.push({ name: 'note-play', id: n.id, learn: true })} aria-label={t('notes.learnLoop')}>
-                    🔁
+                    <Icon name="loop" size={20} />
                   </button>
                 )}
               </div>

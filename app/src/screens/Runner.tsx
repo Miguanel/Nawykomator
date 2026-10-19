@@ -1,9 +1,11 @@
 // "Wykonaj teraz" – prowadzi przez procedurę krok po kroku, tyle razy, ile user ustawił.
+import { hideTip, tipVisible, useGuide } from '../lib/guide';
+import { Icon } from '../components/Icon';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp } from '../app-context';
 import { detectsEnd, MediaPlayer } from '../components/MediaPlayer';
 import { NoteSequence } from '../components/NotePlayer';
-import { Modal } from '../components/ui';
+import { Modal, Tip } from '../components/ui';
 import * as db from '../db/db';
 import type { MediaItem, Note, RunProgress, Task } from '../db/types';
 import { t } from '../i18n';
@@ -24,6 +26,7 @@ export function Runner({ taskId, slotKey, resume }: { taskId: string; slotKey: s
   const [stepDone, setStepDone] = useState(false);
   const [askStop, setAskStop] = useState(false);
   const advanceTimer = useRef<number | null>(null);
+  const guide = useGuide();
 
   useEffect(() => {
     (async () => {
@@ -151,7 +154,7 @@ export function Runner({ taskId, slotKey, resume }: { taskId: string; slotKey: s
     <div className="screen runner">
       <header className="runner-head">
         <button className="icon-btn" onClick={close} aria-label={t('common.close')}>
-          ✕
+          <Icon name="close" size={22} />
         </button>
         <div className="runner-title">
           <small>{task.title}</small>
@@ -172,10 +175,12 @@ export function Runner({ taskId, slotKey, resume }: { taskId: string; slotKey: s
 
       {finished ? (
         <div className="runner-finish">
-          <div className="big-check">✓</div>
+          <div className="big-check">
+            <Icon name="check" size={44} />
+          </div>
           <p>{t('run.finishedHint')}</p>
           <button className="btn primary wide" onClick={finishNow}>
-            ✓ {t('action.done')}
+            <Icon name="check" size={18} /> {t('action.done')}
           </button>
           <button className="btn ghost wide" onClick={() => goTo(0)}>
             {t('run.again')}
@@ -184,10 +189,11 @@ export function Runner({ taskId, slotKey, resume }: { taskId: string; slotKey: s
       ) : (
         step && (
           <section className="runner-body">
+            {tipVisible(guide, 'runner') && <Tip onClose={() => hideTip('runner')}>{t('tip.runner')}</Tip>}
             <h2>{step.title}</h2>
             <div className="rep-counter" aria-live="polite">
               <span className={stepDone ? 'ok' : ''}>
-                {stepDone ? '✓ ' : ''}
+                {stepDone ? <Icon name="check" size={34} /> : null}
                 {rep}/{step.repeat}
               </span>
               <small>{t('run.reps')}</small>
@@ -207,14 +213,22 @@ export function Runner({ taskId, slotKey, resume }: { taskId: string; slotKey: s
 
             <div className="runner-actions">
               <button className="btn primary big" onClick={countRep} disabled={stepDone}>
-                {step.type === 'text' ? `✓ ${t('run.didOnce')}` : `+1 ${t('run.countRep')}`}
+                {step.type === 'text' ? (
+                  <>
+                    <Icon name="check" size={20} /> {t('run.didOnce')}
+                  </>
+                ) : (
+                  <>
+                    <Icon name="plus" size={20} /> {t('run.countRep')}
+                  </>
+                )}
               </button>
               <div className="row">
                 <button className="btn ghost" onClick={() => goTo(stepIndex - 1)} disabled={stepIndex === 0}>
-                  ← {t('run.prev')}
+                  <Icon name="back" size={18} /> {t('run.prev')}
                 </button>
                 <button className="btn ghost" onClick={skip}>
-                  {t('run.skip')} →
+                  {t('run.skip')} <Icon name="skip" size={16} />
                 </button>
               </div>
             </div>

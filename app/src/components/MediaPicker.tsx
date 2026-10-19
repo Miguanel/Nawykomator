@@ -1,3 +1,4 @@
+import { Icon } from './Icon';
 import { useEffect, useRef, useState } from 'react';
 import type { MediaItem } from '../db/types';
 import { t } from '../i18n';
@@ -53,7 +54,7 @@ export function RecordButton({ onSaved, label }: { onSaved: (m: MediaItem) => vo
         </button>
       ) : (
         <button type="button" className="btn" onClick={start}>
-          🎙️ {label ?? t('rec.start')}
+          <Icon name="mic" size={18} /> {label ?? t('rec.start')}
         </button>
       )}
       {err && <p className="error">{err}</p>}
@@ -93,7 +94,7 @@ export function DictateButton({ value, onChange }: { value: string; onChange: (v
   return (
     <>
       <button type="button" className={`btn small ${active ? 'danger' : 'ghost'}`} onClick={toggle}>
-        {active ? `⏹ ${t('dictate.stop')}` : `🗣️ ${t('dictate.start')}`}
+        <Icon name={active ? 'stop' : 'speech'} size={16} /> {active ? t('dictate.stop') : t('dictate.start')}
       </button>
       {err && <span className="error">{err}</span>}
     </>
@@ -152,15 +153,15 @@ export function MediaPicker({
       <div className="seg">
         {allowLink && (
           <button type="button" className={tab === 'link' ? 'on' : ''} onClick={() => setTab('link')}>
-            🔗 {t('picker.link')}
+            <Icon name="link" size={18} /> {t('picker.link')}
           </button>
         )}
         <button type="button" className={tab === 'file' ? 'on' : ''} onClick={() => setTab('file')}>
-          📁 {t('picker.file')}
+          <Icon name="file" size={18} /> {t('picker.file')}
         </button>
         {allowRecord && (
           <button type="button" className={tab === 'rec' ? 'on' : ''} onClick={() => setTab('rec')}>
-            🎙️ {t('picker.record')}
+            <Icon name="mic" size={18} /> {t('picker.record')}
           </button>
         )}
       </div>

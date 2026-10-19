@@ -85,12 +85,12 @@ export function mediaIsVideo(m: MediaItem): boolean {
   return false;
 }
 
-export const KIND_ICON: Record<MediaKind, string> = {
-  youtube: '▶️',
-  soundcloud: '☁️',
-  spotify: '🎵',
-  url: '🔗',
-  file: '📁',
-  voice: '🎙️',
-  image: '🖼️',
-};
+export const KIND_ICON = {
+  youtube: 'video',
+  soundcloud: 'music',
+  spotify: 'music',
+  url: 'link',
+  file: 'file',
+  voice: 'mic',
+  image: 'image',
+} as const satisfies Record<MediaKind, string>;

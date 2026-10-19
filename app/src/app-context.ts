@@ -8,7 +8,9 @@ export type Route =
   | { name: 'task-edit'; id?: string }
   | { name: 'run'; taskId: string; slotKey: string; resume?: boolean }
   | { name: 'note-edit'; id?: string }
-  | { name: 'note-play'; id: string; learn?: boolean };
+  | { name: 'note-play'; id: string; learn?: boolean }
+  | { name: 'welcome' }
+  | { name: 'help' };
 
 export interface DonePreset {
   checked: string[];

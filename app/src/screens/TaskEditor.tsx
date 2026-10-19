@@ -1,7 +1,9 @@
+import { hideTip, tipVisible, useGuide } from '../lib/guide';
+import { Icon } from '../components/Icon';
 import { useEffect, useState } from 'react';
 import { useApp } from '../app-context';
 import { DictateButton, MediaPicker } from '../components/MediaPicker';
-import { Header, Modal, Stepper, Toggle } from '../components/ui';
+import { Header, Modal, Stepper, Tip, Toggle } from '../components/ui';
 import { DEFAULT_STEP_POINTS, TASK_COLORS } from '../config';
 import * as db from '../db/db';
 import type { MediaItem, Note, Step, Task } from '../db/types';
@@ -38,6 +40,7 @@ export function TaskEditor({ id }: { id?: string }) {
   const notes = useLive(() => db.getAll('notes'), [], [] as Note[]);
   const allTasks = useLive(() => db.getAll('tasks'), [], [] as Task[]);
   const categories = [...new Set(allTasks.map((x) => x.category).filter(Boolean))];
+  const guide = useGuide();
 
   useEffect(() => {
     if (id) db.get('tasks', id).then((x) => setTask(x ?? newTask()));
@@ -90,6 +93,7 @@ export function TaskEditor({ id }: { id?: string }) {
         }
       />
 
+      {tipVisible(guide, 'editor') && <Tip onClose={() => hideTip('editor')}>{t('tip.editor')}</Tip>}
       <section className="card form">
         <label>
           {t('editor.name')}
@@ -136,13 +140,13 @@ export function TaskEditor({ id }: { id?: string }) {
                 />
                 <div className="step-tools">
                   <button className="icon-btn" onClick={() => moveStep(i, -1)} aria-label={t('editor.up')} disabled={i === 0}>
-                    ↑
+                    <Icon name="up" size={18} />
                   </button>
                   <button className="icon-btn" onClick={() => moveStep(i, 1)} aria-label={t('editor.down')} disabled={i === task.steps.length - 1}>
-                    ↓
+                    <Icon name="down" size={18} />
                   </button>
                   <button className="icon-btn" onClick={() => removeStep(s.id)} aria-label={t('common.delete')}>
-                    🗑
+                    <Icon name="trash" size={18} />
                   </button>
                 </div>
               </div>
@@ -150,7 +154,13 @@ export function TaskEditor({ id }: { id?: string }) {
               {s.type === 'media' && (
                 <div className="step-src">
                   <span>
-                    {m ? `${KIND_ICON[m.kind]} ${m.title}` : t('editor.noMedia')}
+                    {m ? (
+                      <>
+                        <Icon name={KIND_ICON[m.kind]} size={18} /> {m.title}
+                      </>
+                    ) : (
+                      t('editor.noMedia')
+                    )}
                   </span>
                   <button className="btn small ghost" onClick={() => setPicker({ stepId: s.id })}>
                     {t('editor.change')}
@@ -191,17 +201,18 @@ export function TaskEditor({ id }: { id?: string }) {
       </ol>
       <div className="add-step">
         <button className="btn" onClick={() => setPicker({})}>
-          + {t('editor.addMedia')}
+          <Icon name="video" size={18} /> {t('editor.addMedia')}
         </button>
         <button className="btn" onClick={() => patch({ steps: [...task.steps, newStep('text')] })}>
-          + {t('editor.addText')}
+          <Icon name="text" size={18} /> {t('editor.addText')}
         </button>
         <button className="btn" onClick={() => patch({ steps: [...task.steps, newStep('note')] })}>
-          + {t('editor.addNote')}
+          <Icon name="note" size={18} /> {t('editor.addNote')}
         </button>
       </div>
 
       <h2 className="section-title">{t('editor.schedule')}</h2>
+      {tipVisible(guide, 'schedule') && <Tip onClose={() => hideTip('schedule')}>{t('tip.schedule')}</Tip>}
       <section className="card form">
         <Toggle checked={task.schedule.enabled} onChange={(v) => patchSchedule({ enabled: v })} label={t('editor.scheduleOn')} />
         {task.schedule.enabled && (
@@ -223,12 +234,12 @@ export function TaskEditor({ id }: { id?: string }) {
                     onChange={(e) => patchSchedule({ times: task.schedule.times.map((x, j) => (j === i ? e.target.value : x)) })}
                   />
                   <button className="icon-btn" aria-label={t('common.delete')} onClick={() => patchSchedule({ times: task.schedule.times.filter((_, j) => j !== i) })}>
-                    ✕
+                    <Icon name="close" size={16} />
                   </button>
                 </span>
               ))}
               <button className="btn small ghost" onClick={() => patchSchedule({ times: [...task.schedule.times, '12:00'] })}>
-                + {t('editor.addTime')}
+                <Icon name="plus" size={16} /> {t('editor.addTime')}
               </button>
             </div>
             <p className="hint">{t('editor.timesHint')}</p>

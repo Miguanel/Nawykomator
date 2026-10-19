@@ -1,3 +1,4 @@
+import { Icon } from '../components/Icon';
 import { useApp } from '../app-context';
 import { Empty, Header } from '../components/ui';
 import * as db from '../db/db';
@@ -33,11 +34,11 @@ export function Tasks() {
         title={t('tasks.title')}
         right={
           <button className="btn primary small" onClick={() => app.push({ name: 'task-edit' })}>
-            + {t('tasks.new')}
+            <Icon name="plus" size={18} /> {t('tasks.new')}
           </button>
         }
       />
-      {active.length === 0 && <Empty icon="📋" text={t('tasks.empty')} />}
+      {active.length === 0 && <Empty icon="tasks" text={t('tasks.empty')} />}
       {[...groups.entries()].map(([cat, list]) => (
         <section key={cat}>
           <h2 className="section-title">{cat}</h2>

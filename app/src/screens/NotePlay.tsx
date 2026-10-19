@@ -1,5 +1,6 @@
 // Odtwarzanie notatki po kolei albo "pętla nauki": nieskończona pętla po nagraniach,
 // z której user wyłącza te, których już się nauczył.
+import { Icon } from '../components/Icon';
 import { useEffect, useState } from 'react';
 import { useApp } from '../app-context';
 import { MediaPlayer } from '../components/MediaPlayer';
@@ -41,7 +42,7 @@ export function NotePlay({ id, learn }: { id: string; learn?: boolean }) {
           />
           <div className="row pad">
             <button className="btn" onClick={() => setToken((x) => x + 1)}>
-              ↺ {t('notes.fromStart')}
+              <Icon name="restart" size={18} /> {t('notes.fromStart')}
             </button>
             {rounds > 0 && <span className="muted">{t('notes.rounds', { n: rounds })}</span>}
           </div>
@@ -103,22 +104,24 @@ function LearnLoop({ note }: { note: Note }) {
           )}
           <div className="row">
             <button className="btn ok" onClick={() => setLearned(cur.id, true)}>
-              ✓ {t('learn.markLearned')}
+              <Icon name="check" size={18} /> {t('learn.markLearned')}
             </button>
             <button className="btn ghost" onClick={next}>
-              {t('common.next')} →
+              <Icon name="skip" size={16} /> {t('common.next')}
             </button>
             <button className="btn ghost" onClick={() => setPaused((p) => !p)}>
-              {paused ? '▶' : '⏸'}
+              <Icon name={paused ? 'play' : 'pause'} size={18} />
             </button>
           </div>
         </div>
       ) : (
         <div className="empty">
-          <div className="empty-icon">🎉</div>
+          <div className="empty-icon">
+            <Icon name="sprout" size={30} />
+          </div>
           <p>{t('learn.allLearned')}</p>
           <button className="btn" onClick={resetAll}>
-            ↺ {t('learn.resetAll')}
+            <Icon name="restart" size={18} /> {t('learn.resetAll')}
           </button>
         </div>
       )}

@@ -1,3 +1,4 @@
+import { Icon } from './Icon';
 import { useEffect, useState } from 'react';
 import * as db from '../db/db';
 import type { MediaItem, Note, NoteBlock } from '../db/types';
@@ -62,17 +63,17 @@ export function NoteSequence({ note, playToken, onFinished }: { note: Note; play
         </span>
         <div>
           <button className="icon-btn" disabled={idx === 0} onClick={() => setIdx(idx - 1)} aria-label={t('common.back')}>
-            ←
+            <Icon name="back" />
           </button>
           <button className="icon-btn" onClick={next} aria-label={t('common.next')}>
-            →
+            <Icon name="chevron" />
           </button>
         </div>
       </div>
       <BlockView key={`${b.id}-${inner}`} block={b} media={b.mediaId ? mediaMap.get(b.mediaId) : undefined} playToken={0} autoPlay onEnded={next} />
       {(b.type === 'text' || b.type === 'image') && (
         <button className="btn wide" onClick={next}>
-          {t('common.next')} →
+          {t('common.next')}
         </button>
       )}
     </div>

@@ -1,8 +1,10 @@
+import { hideTip, tipVisible, useGuide } from '../lib/guide';
+import { Icon } from '../components/Icon';
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../app-context';
 import { DictateButton, RecordButton } from '../components/MediaPicker';
 import { BlockView, useMediaMap } from '../components/NotePlayer';
-import { Header, Modal, Toggle } from '../components/ui';
+import { Header, Modal, Tip, Toggle } from '../components/ui';
 import * as db from '../db/db';
 import type { MediaItem, Note, NoteBlock } from '../db/types';
 import { t } from '../i18n';
@@ -20,6 +22,7 @@ export function NoteEditor({ id }: { id?: string }) {
   const [confirmDel, setConfirmDel] = useState(false);
   const mediaMap = useMediaMap();
   const dirty = useRef(false);
+  const guide = useGuide();
 
   useEffect(() => {
     if (id) db.get('notes', id).then((n) => setNote(n ?? newNote()));
@@ -77,6 +80,7 @@ export function NoteEditor({ id }: { id?: string }) {
           </button>
         }
       />
+      {tipVisible(guide, 'note') && <Tip onClose={() => hideTip('note')}>{t('tip.note')}</Tip>}
       <section className="card form">
         <label>
           {t('notes.noteTitle')}
@@ -87,11 +91,11 @@ export function NoteEditor({ id }: { id?: string }) {
       {note.blocks.length > 0 && (
         <div className="row pad">
           <button className="btn" onClick={() => app.push({ name: 'note-play', id: note.id })}>
-            ▶ {t('notes.playAll')}
+            <Icon name="play" size={16} /> {t('notes.playAll')}
           </button>
           {playable.length > 0 && (
             <button className="btn" onClick={() => app.push({ name: 'note-play', id: note.id, learn: true })}>
-              🔁 {t('notes.learnLoop')}
+              <Icon name="loop" size={18} /> {t('notes.learnLoop')}
             </button>
           )}
         </div>
@@ -105,13 +109,13 @@ export function NoteEditor({ id }: { id?: string }) {
               <span className="block-type">{t(`block.${b.type}` as 'block.text')}</span>
               <div className="step-tools">
                 <button className="icon-btn" disabled={i === 0} onClick={() => move(i, -1)} aria-label={t('editor.up')}>
-                  ↑
+                  <Icon name="up" size={18} />
                 </button>
                 <button className="icon-btn" disabled={i === note.blocks.length - 1} onClick={() => move(i, 1)} aria-label={t('editor.down')}>
-                  ↓
+                  <Icon name="down" size={18} />
                 </button>
                 <button className="icon-btn" onClick={() => remove(b)} aria-label={t('common.delete')}>
-                  🗑
+                  <Icon name="trash" size={18} />
                 </button>
               </div>
             </div>
@@ -135,11 +139,11 @@ export function NoteEditor({ id }: { id?: string }) {
 
       <div className="add-step">
         <button className="btn" onClick={() => addBlock({ type: 'text', text: '' })}>
-          + 📝 {t('notes.addText')}
+          <Icon name="text" size={18} /> {t('notes.addText')}
         </button>
         <RecordButton label={t('notes.addVoice')} onSaved={(m) => addBlock({ type: 'audio', mediaId: m.id })} />
         <label className="btn file-btn">
-          + 📁 {t('notes.addFile')}
+          <Icon name="file" size={18} /> {t('notes.addFile')}
           <input type="file" accept="audio/*,video/*,image/*" hidden onChange={(e) => onFile(e.target.files?.[0])} />
         </label>
       </div>

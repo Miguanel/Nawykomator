@@ -1,7 +1,7 @@
 {
   "name": "nawykomator",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -20,6 +20,8 @@
     "@capacitor/browser": "^8.0.5",
     "@capacitor/core": "^8.5.3",
     "@capacitor/local-notifications": "^8.3.1",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource-variable/bitter": "^5.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

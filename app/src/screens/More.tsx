@@ -1,3 +1,4 @@
+import { Icon } from '../components/Icon';
 import { useEffect, useState } from 'react';
 import { useApp } from '../app-context';
 import { Header } from '../components/ui';
@@ -21,7 +22,7 @@ import { checkForUpdate } from '../lib/update';
 export function CoffeeButton({ className = '' }: { className?: string }) {
   return (
     <button className={`btn coffee ${className}`} onClick={() => openExternal(COFFEE_URL)}>
-      ☕ {t('more.coffee')}
+      <Icon name="cup" size={20} /> {t('more.coffee')}
     </button>
   );
 }
@@ -68,6 +69,17 @@ export function More() {
     <div className="screen">
       <Header title={t('more.title')} />
 
+      <button className="list-row help-link" onClick={() => app.push({ name: 'help' })}>
+        <span className="feature-icon">
+          <Icon name="compass" size={22} />
+        </span>
+        <span className="list-main">
+          <strong>{t('more.guide')}</strong>
+          <small>{t('more.guideText')}</small>
+        </span>
+        <Icon name="chevron" size={20} className="chev" />
+      </button>
+
       <h2 className="section-title">{t('more.language')}</h2>
       <div className="card">
         <div className="seg">
@@ -109,7 +121,7 @@ export function More() {
           </>
         )}
         <button className="btn" onClick={test}>
-          🔔 {t('more.test')}
+          <Icon name="bell" size={18} /> {t('more.test')}
         </button>
         <p className="hint">{t('more.planned', { n: lastPlan.length })}</p>
         <details>

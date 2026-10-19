@@ -1,5 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#2f6b4f"/>
-  <circle cx="256" cy="256" r="150" fill="none" stroke="#f5f0e6" stroke-width="34" stroke-dasharray="700 300" stroke-linecap="round" transform="rotate(-60 256 256)"/>
-  <path d="M188 262l46 46 92-104" fill="none" stroke="#e9b54a" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="w" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#7a5639"/>
+      <stop offset="1" stop-color="#5a3c28"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#w)"/>
+  <g fill="none" stroke="#f3e3c8" stroke-opacity="0.35" stroke-width="7">
+    <ellipse cx="258" cy="262" rx="182" ry="176"/>
+    <ellipse cx="254" cy="258" rx="140" ry="136"/>
+  </g>
+  <ellipse cx="256" cy="260" rx="98" ry="95" fill="none" stroke="#f3e3c8" stroke-opacity="0.6" stroke-width="7"/>
+  <path d="M178 300c0-84 54-136 156-146-6 102-60 152-142 152" fill="#cfe6b4"/>
+  <path d="M184 318l92-92" stroke="#5a3c28" stroke-width="16" stroke-linecap="round"/>
 </svg>
