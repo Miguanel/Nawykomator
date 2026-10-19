@@ -41,7 +41,7 @@ export const pl = {
   'today.notifOff': 'Powiadomienia są wyłączone – apka nie przypomni o zadaniach.',
   'today.notifOn': 'Włącz',
 
-  'update.available': 'Jest nowa wersja {v}',
+  'update.available': 'Je nowo wersja {v}',
   'update.download': 'Pobierz',
 
   'tasks.title': 'Zadania',
