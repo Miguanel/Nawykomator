@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../app-context';
 import { DictateButton, MediaPicker } from '../components/MediaPicker';
 import { Header, Modal, Stepper, Tip, Toggle } from '../components/ui';
+import { TaskMenu, type MenuView } from '../components/TaskMenu';
+import { duplicateTask } from '../lib/actions';
 import { DEFAULT_STEP_POINTS, TASK_COLORS } from '../config';
 import * as db from '../db/db';
 import type { MediaItem, Note, Step, Task } from '../db/types';
 import { DAY_KEYS, t, WEEK_ORDER } from '../i18n';
-import { deleteTask } from '../lib/actions';
 import { useLive } from '../lib/hooks';
 import { KIND_ICON } from '../lib/media';
 import { requestReschedule } from '../lib/notifications';
@@ -34,7 +35,8 @@ export function TaskEditor({ id }: { id?: string }) {
   const app = useApp();
   const [task, setTask] = useState<Task | null>(id ? null : newTask());
   const [picker, setPicker] = useState<{ stepId?: string } | null>(null);
-  const [confirmDel, setConfirmDel] = useState(false);
+  const [menu, setMenu] = useState<MenuView | null>(null);
+  const [saved, setSaved] = useState<Task | null>(null);
   const [error, setError] = useState('');
   const media = useLive(() => db.getAll('media'), [], [] as MediaItem[]);
   const notes = useLive(() => db.getAll('notes'), [], [] as Note[]);
@@ -66,16 +68,39 @@ export function TaskEditor({ id }: { id?: string }) {
     setPicker(null);
   };
 
-  const save = async () => {
+  /** Zapisuje zadanie; zwraca zapisaną wersję albo null, gdy brakuje nazwy. */
+  const persist = async (): Promise<Task | null> => {
     if (!task.title.trim()) {
       setError(t('editor.needTitle'));
-      return;
+      return null;
     }
     const steps = task.steps.map((s, i) => ({ ...s, title: s.title.trim() || `${t('editor.step')} ${i + 1}` }));
-    await db.put('tasks', { ...task, title: task.title.trim(), category: task.category.trim(), steps });
+    const clean = { ...task, title: task.title.trim(), category: task.category.trim(), steps };
+    await db.put('tasks', clean);
     requestReschedule();
+    return clean;
+  };
+
+  const save = async () => {
+    if (!(await persist())) return;
     app.toast(t('editor.saved'));
     app.back();
+  };
+
+  const duplicate = async () => {
+    const s = await persist();
+    if (!s) return;
+    const copy = await duplicateTask(s, t('manage.copySuffix'));
+    app.toast(t('manage.duplicated'));
+    app.replace({ name: 'task-edit', id: copy.id });
+  };
+
+  /** Akcje zarządzania działają na zapisanej wersji zadania. */
+  const openMenu = async (view: MenuView) => {
+    const s = await persist();
+    if (!s) return;
+    setSaved(s);
+    setMenu(view);
   };
 
   const toggleDay = (d: number) =>
@@ -265,9 +290,23 @@ export function TaskEditor({ id }: { id?: string }) {
       </section>
 
       {id && (
-        <button className="btn danger wide" onClick={() => setConfirmDel(true)}>
-          {t('editor.delete')}
-        </button>
+        <>
+          <h2 className="section-title">{t('manage.title')}</h2>
+          <div className="manage-row">
+            <button className="btn" onClick={duplicate}>
+              <Icon name="copy" size={18} /> {t('manage.duplicate')}
+            </button>
+            <button className="btn" onClick={() => openMenu('share')}>
+              <Icon name="share" size={18} /> {t('manage.share')}
+            </button>
+            <button className="btn" onClick={() => openMenu('archive')}>
+              <Icon name="archive" size={18} /> {t('manage.archive')}
+            </button>
+            <button className="btn danger" onClick={() => openMenu('delete')}>
+              <Icon name="trash" size={18} /> {t('manage.delete')}
+            </button>
+          </div>
+        </>
       )}
       <div className="bottom-space" />
 
@@ -276,30 +315,7 @@ export function TaskEditor({ id }: { id?: string }) {
           <MediaPicker onPicked={onPicked} />
         </Modal>
       )}
-      {confirmDel && (
-        <Modal
-          title={t('editor.deleteQ')}
-          onClose={() => setConfirmDel(false)}
-          footer={
-            <>
-              <button className="btn ghost" onClick={() => setConfirmDel(false)}>
-                {t('common.cancel')}
-              </button>
-              <button
-                className="btn danger"
-                onClick={async () => {
-                  await deleteTask(task);
-                  app.back();
-                }}
-              >
-                {t('common.delete')}
-              </button>
-            </>
-          }
-        >
-          <p>{t('editor.deleteHint')}</p>
-        </Modal>
-      )}
+      {menu && saved && <TaskMenu task={saved} fromEditor initial={menu} onClose={() => setMenu(null)} />}
     </div>
   );
 }

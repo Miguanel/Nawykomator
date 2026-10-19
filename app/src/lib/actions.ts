@@ -99,8 +99,55 @@ export async function interruptRun(task: Task, progress: RunProgress): Promise<v
   requestReschedule();
 }
 
-export async function deleteTask(task: Task): Promise<void> {
+// --- zarządzanie zadaniami ---
+
+/** Archiwum: zadanie znika z "Dziś" i nie przypomina, ale można je przywrócić. */
+export async function archiveTask(task: Task): Promise<void> {
   await db.put('tasks', { ...task, archived: true });
   await db.del('progress', task.id);
+  for (const s of await db.getAll('snoozes')) if (s.taskId === task.id) await db.del('snoozes', s.id);
+  requestReschedule();
+}
+
+export async function restoreTask(task: Task): Promise<void> {
+  await db.put('tasks', { ...task, archived: false });
+  requestReschedule();
+}
+
+/** Kopia zadania z nowymi id (nagrania są współdzielone, nie kopiujemy plików). */
+export async function duplicateTask(task: Task, suffix: string): Promise<Task> {
+  const copy: Task = {
+    ...task,
+    id: uid(),
+    title: `${task.title} ${suffix}`.trim(),
+    archived: false,
+    createdAt: Date.now(),
+    steps: task.steps.map((s) => ({ ...s, id: uid() })),
+  };
+  await db.put('tasks', copy);
+  requestReschedule();
+  return copy;
+}
+
+/**
+ * Usunięcie na zawsze. Historia (zdarzenia w statystykach) zostaje.
+ * Nagrania z kroków kasujemy tylko wtedy, gdy nie używa ich inne zadanie ani notatka.
+ */
+export async function deleteTaskForever(task: Task): Promise<void> {
+  await db.del('tasks', task.id);
+  await db.del('progress', task.id);
+  for (const s of await db.getAll('snoozes')) if (s.taskId === task.id) await db.del('snoozes', s.id);
+
+  const [tasks, notes] = await Promise.all([db.getAll('tasks'), db.getAll('notes')]);
+  const used = new Set<string>();
+  tasks.forEach((x) => x.steps.forEach((s) => s.mediaId && used.add(s.mediaId)));
+  notes.forEach((n) => n.blocks.forEach((b) => b.mediaId && used.add(b.mediaId)));
+  for (const s of task.steps) {
+    if (s.mediaId && !used.has(s.mediaId)) {
+      const m = await db.get('media', s.mediaId);
+      if (m?.blobId) await db.del('blobs', m.blobId);
+      await db.del('media', s.mediaId);
+    }
+  }
   requestReschedule();
 }

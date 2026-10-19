@@ -38,6 +38,11 @@ const P: Record<string, string> = {
   stats: 'M5 20v-8M10.5 20V5M16 20v-5.5M21 20H3',
   more: 'M5.5 12h.01M12 12h.01M18.5 12h.01',
   stop: 'M7 7h10v10H7Z',
+  copy: 'M8.5 8.5h11v12h-11ZM5 15.5V3.5h11',
+  share: 'M12 15V3.5M7.5 8 12 3.5 16.5 8M5 12.5v8h14v-8',
+  archive: 'M3.5 4.5h17v4h-17ZM5 8.5v11h14v-11M10 12.5h4',
+  edit: 'M4 20h4L19.5 8.5l-4-4L4 16ZM13.5 6.5l4 4',
+  download: 'M12 4v11M7 10.5l5 5 5-5M5 20h14',
   record: 'M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z',
 };
 

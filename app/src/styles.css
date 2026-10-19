@@ -1730,3 +1730,80 @@ details p {
 .bottom-space {
   height: 24px;
 }
+
+/* ---------- zarządzanie zadaniami ---------- */
+.tasks-seg {
+  margin-bottom: 4px;
+}
+.count-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--oak-soft);
+  color: var(--oak);
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.list-row .row-main {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.list-row.archived {
+  background: transparent;
+  border-style: dashed;
+}
+.list-row.archived strong {
+  color: var(--bark-2);
+}
+.menu {
+  display: grid;
+  gap: 4px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--moss);
+}
+.menu-item > span {
+  display: grid;
+  color: var(--bark);
+}
+.menu-item small {
+  color: var(--bark-2);
+  font-size: 0.9rem;
+}
+.menu-item:active:not(:disabled),
+.menu-item:hover:not(:disabled) {
+  background: var(--paper);
+}
+.menu-item.danger,
+.menu-item.danger > span {
+  color: var(--clay);
+}
+.menu-item:disabled {
+  opacity: 0.5;
+}
+.manage-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.import-box {
+  margin-top: 20px;
+}
+.import-box .hint {
+  margin-top: 6px;
+}

@@ -41,7 +41,7 @@ export const pl = {
   'today.notifOff': 'Powiadomienia są wyłączone – apka nie przypomni o zadaniach.',
   'today.notifOn': 'Włącz',
 
-  'update.available': 'Je nowo wersja {v}',
+  'update.available': 'Jest nowa wersja {v}',
   'update.download': 'Pobierz',
 
   'tasks.title': 'Zadania',
@@ -352,6 +352,49 @@ export const pl = {
 
   'more.guide': 'Przewodnik i pomoc',
   'more.guideText': 'Jak działa apka, pierwsze kroki, ekran powitalny',
+
+  'tasks.active': 'Aktywne',
+  'tasks.archive': 'Archiwum',
+  'tasks.archiveEmpty': 'Archiwum jest puste. Zarchiwizowane zadania nie przypominają i nie pojawiają się na ekranie Dziś.',
+  'tasks.actions': 'Opcje zadania',
+  'tasks.import': 'Importuj zadanie z pliku',
+  'tasks.importHint': 'Plik zadania dostaniesz, gdy ktoś udostępni Ci zadanie z Nawykomatora.',
+  'tasks.imported': 'Zaimportowano „{title}”',
+  'tasks.importError': 'To nie jest plik zadania z Nawykomatora.',
+
+  'manage.title': 'Zarządzanie',
+  'manage.edit': 'Edytuj',
+  'manage.duplicate': 'Duplikuj',
+  'manage.duplicateHint': 'Kopia z tymi samymi krokami i harmonogramem',
+  'manage.copySuffix': '(kopia)',
+  'manage.duplicated': 'Utworzono kopię zadania',
+  'manage.share': 'Udostępnij',
+  'manage.shareHint': 'Wyślij plik zadania albo listę kroków',
+  'manage.archive': 'Archiwizuj',
+  'manage.archiveShort': 'Ukryj bez usuwania, możesz przywrócić',
+  'manage.archiveQ': 'Zarchiwizować zadanie?',
+  'manage.archiveHint': 'Zadanie zniknie z ekranu Dziś i przestanie przypominać. Znajdziesz je w Zadania → Archiwum i możesz je przywrócić.',
+  'manage.archived': 'Przeniesiono do archiwum',
+  'manage.restore': 'Przywróć',
+  'manage.restoreHint': 'Wróci na listę i do przypomnień',
+  'manage.restored': 'Przywrócono zadanie',
+  'manage.delete': 'Usuń na zawsze',
+  'manage.deleteQ': 'Usunąć zadanie na zawsze?',
+  'manage.deleteHint': 'Tego nie da się cofnąć. Punkty i historia w statystykach zostaną.',
+  'manage.deleted': 'Usunięto zadanie',
+
+  'share.title': 'Udostępnij zadanie',
+  'share.file': 'Plik zadania',
+  'share.fileHint': 'Całe zadanie z krokami, linkami i nagraniami. Na drugim telefonie: Zadania → Importuj zadanie z pliku.',
+  'share.fileMessage': 'Zadanie „{title}” z Nawykomatora. Otwórz Nawykomator → Zadania → Importuj zadanie z pliku.',
+  'share.text': 'Lista kroków',
+  'share.textHint': 'Zwykły tekst do wysłania w wiadomości',
+  'share.scheduleLine': 'Harmonogram: {s}',
+  'share.footer': 'Zadanie z aplikacji Nawykomator',
+  'share.copied': 'Skopiowano do schowka',
+  'share.saved': 'Zapisano plik zadania',
+  'share.tooBig': 'Nagrania z telefonu były za duże – w pliku są same kroki i linki.',
+  'share.error': 'Nie udało się. Spróbuj ponownie.',
 };
 
 export type Dict = { [K in keyof typeof pl]: string };
