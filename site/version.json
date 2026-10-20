@@ -1,6 +1,6 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "apk": "downloads/nawykomator.apk",
-  "notes": "Nowy wyglad i przewodnik",
-  "date": "2026-10-19"
+  "notes": "Zarzadzanie zadaniami: kopiuj, udostepnij, archiwum, usun",
+  "date": "2026-10-20"
 }
